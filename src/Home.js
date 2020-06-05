@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Button, Text } from "react-native";
+import { StyleSheet, View, Button, Text, TextInput, FlatList } from "react-native";
 import Colors from "../constants/colors";
 
 const APP_ID = "9ef9baef";
@@ -20,14 +20,14 @@ export default class Home extends React.Component {
       dataSource: null,
     };
   }
-
+//ingr is the key, and we let the user find 
   componentDidMount() {
     return fetch(
       `https://api.edamam.com/api/food-database/parser?ingr=red%20apple&app_id=${APP_ID}&app_key=${APP_KEY}`
     )
       .then((response) => response.json())
       .then((responseJson) => {
-          alert(JSON.stringify(responseJson))
+          alert(JSON.stringify(responseJson)) //ingr this is your key this is wat the api will return for you. so we need to send whichver food item that we are looking for / can we let a user search and return an item? yes. heymaybe i can call you an explain to you yes on what?watspp? i do not have discord?..... wait teamviewer has call featureok    // can you show me how to search for an item? yes sure
         this.setState({
           isLoading: false,
           dataSource: null,
@@ -38,13 +38,49 @@ export default class Home extends React.Component {
       })
   }
 
+  fetchData  =(item)=>{
+      console.log(item)
+    fetch(
+        `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
+      )
+        .then((response) => response.json())
+        .then((responseJson) => {
+            console.log(responseJson)
+            // alert(JSON.stringify(responseJson)) //ingr this is your key this is wat the api will return for you. so we need to send whichver food item that we are looking for / can we let a user search and return an item? yes. heymaybe i can call you an explain to you yes on what?watspp? i do not have discord?..... wait teamviewer has call featureok    // can you show me how to search for an item? yes sure
+          this.setState({
+            itemArray:responseJson.parsed,
+            isLoading: false,
+            dataSource: null,
+          })
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
       //styling for navigation container
       <View style={styles.container}>
-        <Text> hi</Text>
+        <TextInput onChangeText={(text)=>this.setState({item:text})} style={styles.textInput} placeholder = "Input here"> </TextInput>
+        <Button title="Find"
+                onPress={() => this.fetchData(this.state.item)}
+        />
+        <FlatList 
+        style={{height:100,width:200}}
+        data = {this.state.itemArray} 
+        renderItem={({ item })=>
+        
+        <View style={{flex:1}}>
+           <View> 
+              <Text style={{}}>Fat:</Text> 
+               <Text style={{}}>Fat: {item.food.nutrients.FAT}</Text> 
+           </View>
+            <Text>{item.food.nutrients.FIBTG}</Text>
 
+        </View>}
+        />
         <View style={styles.buttonContainer}>
           <View>
             <Button
@@ -84,4 +120,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#5979D9",
     justifyContent: "space-evenly",
   },
+
+  textInput: {
+      borderWidth:2,
+      borderColor:'black',
+
+      height: 20,
+      width: 100
+  }
 });
