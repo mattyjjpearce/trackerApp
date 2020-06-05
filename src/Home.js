@@ -1,14 +1,42 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Button, Text } from "react-native";
 import Colors from "../constants/colors";
 
-/**
- * Home screen
- */
+const APP_ID = "9ef9baef";
+const APP_KEY = "f48b3d6c5374f60449cfe909f947a540";
+const url =
+  "https://api.edamam.com/api/food-database/parser?ingr=red%20apple&app_id=${APP_ID}&app_key=${APP_KEY}";
+
 export default class Home extends React.Component {
   static navigationOptions = {
     title: "Home",
   };
+
+  //storing results from the api into this local state
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+      dataSource: null,
+    };
+  }
+
+  componentDidMount() {
+    return fetch(
+      `https://api.edamam.com/api/food-database/parser?ingr=red%20apple&app_id=${APP_ID}&app_key=${APP_KEY}`
+    )
+      .then((response) => response.json())
+      .then((responseJson) => {
+          alert(JSON.stringify(responseJson))
+        this.setState({
+          isLoading: false,
+          dataSource: null,
+        })
+      })
+      .catch((error) => {
+          console.log(error)
+      })
+  }
 
   render() {
     const { navigate } = this.props.navigation;
