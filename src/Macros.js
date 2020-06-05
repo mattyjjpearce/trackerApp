@@ -1,17 +1,14 @@
-import React, {useState, useEffect} from "react";
-import { StyleSheet, View, Button, Text } from "react-native";
-import Colors from "../constants/colors";
+import React from "react";
+import { StyleSheet, View, Button, Text} from "react-native";
 
-/**
- * Home screen
- */
-export default class Home extends React.Component {
+export default class Macros extends React.Component {
   static navigationOptions = {
-    title: "Home",
+    title: "Macros",
   };
 
   render() {
     const { navigate } = this.props.navigation;
+
     return (
       //styling for navigation container
       <View style={styles.container}>

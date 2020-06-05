@@ -14,7 +14,10 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 // Components
 import Home from './src/Home';
-import Profile from './src/Profile';
+import Tracker from './src/Tracker';
+import Shops from './src/Shops';
+import Macros from './src/Macros';
+
 
 /**
  * createStackNavigator
@@ -24,7 +27,10 @@ import Profile from './src/Profile';
 */
 const Navigator = createStackNavigator({
     Home: { screen: Home },
-    Profile: { screen: Profile },
+    Tracker: { screen: Tracker },
+    Shops: {screen: Shops}, 
+    Macros: {screen: Macros}, 
+
 });
 
 /**
