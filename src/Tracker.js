@@ -41,15 +41,16 @@ export default class Tracker extends React.Component {
           "x-app-id": "0f092d40",
           "x-app-key": "a9d3743339dce2115fb110ecc7ce7214",
         },
-      })
+      }
+    )
       .then((response) => response.json())
       .then((responseJson) => {
         console.log(responseJson);
         console.log(responseJson.branded[0].food_name);
-        alert(JSON.stringify(responseJson)); //ingr this is your key this is wat the api will return for you. so we need to send whichver food item that we are looking for / can we let a user search and return an item? yes. heymaybe i can call you an explain to you yes on what?watspp? i do not have discord?..... wait teamviewer has call featureok    // can you show me how to search for an item? yes sure
+        // alert(JSON.stringify(responseJson)); //ingr this is your key this is wat the api will return for you. so we need to send whichver food item that we are looking for / can we let a user search and return an item? yes. heymaybe i can call you an explain to you yes on what?watspp? i do not have discord?..... wait teamviewer has call featureok    // can you show me how to search for an item? yes sure
         this.setState({
           itemArray: responseJson.parsed,
-          branded:responseJson.branded,
+          branded: responseJson.branded,
           isLoading: false,
           dataSource: null,
         });
@@ -78,14 +79,12 @@ export default class Tracker extends React.Component {
           />
 
           <FlatList
-            style={{ height: "80%", width: "80%" }}
-            backgroundColor="grey"
+            style={styles.resultsBackground}
             data={this.state.branded}
-            renderItem={({ item,index }) => (
-              <View style={{ flex: 1 }}>
-                <View style={styles.resultsStyle}>
-                  <Text style={{}}>{item.food_name}</Text>                  
-                </View>
+            renderItem={({ item, index }) => (
+              <View style={styles.resultsStyle}>
+                <Text style={styles.resultsText}>{item.food_name}</Text>
+            <Text> F: </Text>
               </View>
             )}
           />
@@ -144,11 +143,25 @@ const styles = StyleSheet.create({
 
     // backgroundColor: "blue"
   },
+
+  resultsBackground: {
+    height: "50%",
+    width: "90%",
+    padding: 5,
+    alignSelf: "center",
+    borderRadius: 10,
+  },
   resultsStyle: {
-      padding: 20,
-      borderWidth: 1
-  }
+    flex: 2,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderRadius: 10,
+    backgroundColor: "#5979D9",
+    shadowOpacity: 0.3,
+  },
 
-
-
+  resultsText: {
+    opacity: 1,
+    color: "black",
+  },
 });
