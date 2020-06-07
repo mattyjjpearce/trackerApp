@@ -21,11 +21,12 @@ export default class Home extends React.Component {
   }
 //ingr is the key, and we let the user find
 
-  fetchData  =(item)=>{
-      console.log(item)
+  fetchData = (item) => {
+    console.log(item)
     fetch(
         `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
-      )
+     
+        )
         .then((response) => response.json())
         .then((responseJson) => {
             console.log(responseJson)

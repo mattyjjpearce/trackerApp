@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -29,7 +29,7 @@ export default class Tracker extends React.Component {
       dataSource: null,
     };
   }
-  //ingr is the key, and we let the user find
+  //This is fetching the data for info such as name and to get the item ID
 
   fetchData = (item) => {
     console.log(item);
@@ -48,6 +48,53 @@ export default class Tracker extends React.Component {
         console.log(responseJson);
         console.log(responseJson.branded[0].food_name);
         // alert(JSON.stringify(responseJson)); //ingr this is your key this is wat the api will return for you. so we need to send whichver food item that we are looking for / can we let a user search and return an item? yes. heymaybe i can call you an explain to you yes on what?watspp? i do not have discord?..... wait teamviewer has call featureok    // can you show me how to search for an item? yes sure
+        this.setState({
+          itemArray: responseJson.parsed,
+          branded: responseJson.branded,
+          isLoading: false,
+          dataSource: null,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  //second method to get nutrients
+  fetchData = (item) => {
+    console.log(item);
+    fetch(
+      // edamam `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
+      `https://trackapi.nutritionix.com/v2/search/instant?query=${item}`,
+      {
+        headers: {
+          "x-app-id": "0f092d40",
+          "x-app-key": "a9d3743339dce2115fb110ecc7ce7214",
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+        console.log(responseJson.branded[0].food_name);
+        console.log(responseJson.branded[0].nix_item_id);
+        // alert(JSON.stringify(responseJson));
+     /* 
+        let x = 
+        fetch(
+             `https://trackapi.nutritionix.com/v2/search/item?nix_item_id=${x}`,
+
+            headers: {
+              "x-app-id": "0f092d40",
+              "x-app-key": "a9d3743339dce2115fb110ecc7ce7214",
+            },
+          }
+          .then((res) => {})
+          .then((anotherJson) -> {})
+        );
+        
+         */ 
+
         this.setState({
           itemArray: responseJson.parsed,
           branded: responseJson.branded,
@@ -82,9 +129,12 @@ export default class Tracker extends React.Component {
             style={styles.resultsBackground}
             data={this.state.branded}
             renderItem={({ item, index }) => (
-              <View style={styles.resultsStyle}>
+             <View
+             style={styles.outViewStyle}>
+             <View style={styles.resultsStyle}>
                 <Text style={styles.resultsText}>{item.food_name}</Text>
-            <Text> F: </Text>
+                <Text> F: </Text>
+              </View>
               </View>
             )}
           />
@@ -158,10 +208,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#5979D9",
     shadowOpacity: 0.3,
+    backfaceVisibility: "hidden"
   },
 
   resultsText: {
     opacity: 1,
     color: "black",
   },
+  outViewStyle: {
+    padding : 10
+  }
 });
