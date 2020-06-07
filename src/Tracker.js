@@ -55,6 +55,13 @@ export default class Tracker extends React.Component {
     return (
       //styling for navigation container
       <View style={styles.container}>
+        <View style={styles.ViewFilterContainer}>
+          <View style={styles.filterButtonView}>
+            <Button title="Filter" fontFamily="Avenir" color="black"  />
+
+          </View>
+        </View>
+
         <View style={styles.viewForInputContainer}>
           <TextInput
             onChangeText={(text) => this.setState({ item: text })}
@@ -70,16 +77,27 @@ export default class Tracker extends React.Component {
             style={styles.resultsBackground}
             data={this.state.itemArray}
             renderItem={({ item }) => (
-
               <View style={styles.resultsContainer}>
                 <View style={styles.textView}>
                   <Text style={styles.resultsText}>
                     {item.food.label}
                     {item.food.brand}
                   </Text>
-                  </View>
-
-                  <Text> F:{Math.round(item.food.nutrients.FAT)}</Text>
+                </View>
+                <View style={styles.nutritionResultsText}>
+                  <Text style={styles.resultsTextSubInfo}>
+                    F: {Math.round(item.food.nutrients.FAT)}
+                  </Text>
+                  <Text style={styles.resultsTextSubInfo}>
+                    C: {Math.round(item.food.nutrients.CHOCDF)}
+                  </Text>
+                  <Text style={styles.resultsTextSubInfo}>
+                    P: {Math.round(item.food.nutrients.PROCNT)}
+                  </Text>
+                  <Text style={styles.resultsTextSubInfo}>
+                    K/Cal: {Math.round(item.food.nutrients.ENERC_KCAL)}
+                  </Text>
+                </View>
               </View>
             )}
           />
@@ -113,8 +131,16 @@ export default class Tracker extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+   
+  },
+  ViewFilterContainer: {
+    padding: 5,
+    alignItems: "flex-start",
   },
 
+  filterButtonView: {
+   borderWidth: .4,
+  },
   buttonContainer: {
     width: "100%",
     flexDirection: "row",
@@ -126,7 +152,7 @@ const styles = StyleSheet.create({
   },
 
   viewForInputContainer: {
-    padding: 20,
+    padding: 10,
   },
   textInputContainer: {
     backgroundColor: "white",
@@ -138,14 +164,14 @@ const styles = StyleSheet.create({
     color: "#919191",
     fontSize: 18,
     fontFamily: "Avenir-Light",
-    shadowOpacity: .9,
+    shadowOpacity: 0.9,
     shadowRadius: 3.84,
     shadowColor: "black",
     elevation: 5,
     shadowOffset: {
-        width: 0, 
-        height: 2,
-    } 
+      width: 0,
+      height: 2,
+    },
 
     // backgroundColor: "blue"
   },
@@ -156,30 +182,37 @@ const styles = StyleSheet.create({
     padding: 5,
     alignSelf: "center",
     borderRadius: 10,
-
-
   },
   resultsContainer: {
     flexDirection: "column",
     justifyContent: "space-between",
     margin: 10,
-    padding: 20,
-    borderRadius: 10,
+    padding: 5,
+    borderRadius: 5,
     shadowOpacity: 0.3,
     backgroundColor: "#5979D960",
-
   },
 
   textView: {
-    borderBottomWidth: 1,    
+    borderBottomWidth: 1,
   },
 
   resultsText: {
     color: "black",
     fontFamily: "Avenir",
+    borderRightWidth: 1,
+    flexDirection: "column",
+  },
 
+  nutritionResultsText: {
+    fontFamily: "Avenir",
+    flex: 1,
+    alignSelf: "flex-end",
   },
   outViewStyle: {
     padding: 10,
+  },
+  resultsTextSubInfo: {
+    paddingLeft: 5,
   },
 });
