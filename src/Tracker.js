@@ -60,7 +60,7 @@ export default class Tracker extends React.Component {
             onChangeText={(text) => this.setState({ item: text })}
             style={styles.textInputContainer}
           >
-            <Text style={styles.textColour}> Find Food!</Text>
+            <Text style={styles.textColour}> Search Food </Text>
           </TextInput>
           <Button
             title="Search"
@@ -70,14 +70,16 @@ export default class Tracker extends React.Component {
             style={styles.resultsBackground}
             data={this.state.itemArray}
             renderItem={({ item }) => (
-              <View style={styles.outViewStyle}>
-                <View style={styles.resultsStyle}>
+
+              <View style={styles.resultsContainer}>
+                <View style={styles.textView}>
                   <Text style={styles.resultsText}>
                     {item.food.label}
                     {item.food.brand}
                   </Text>
-                  <Text> F: {item.food.nutrients.FAT}</Text>
-                </View>
+                  </View>
+
+                  <Text> F:{Math.round(item.food.nutrients.FAT)}</Text>
               </View>
             )}
           />
@@ -127,35 +129,55 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   textInputContainer: {
+    backgroundColor: "white",
     borderColor: "black",
+    borderWidth: 1,
+    borderLeftWidth: 1,
     borderBottomWidth: 1,
     width: "70%",
     color: "#919191",
-    fontSize: 22,
-    fontFamily: "Avenir",
+    fontSize: 18,
+    fontFamily: "Avenir-Light",
+    shadowOpacity: .9,
+    shadowRadius: 3.84,
+    shadowColor: "black",
+    elevation: 5,
+    shadowOffset: {
+        width: 0, 
+        height: 2,
+    } 
 
     // backgroundColor: "blue"
   },
 
   resultsBackground: {
-    height: "50%",
+    height: "70%",
     width: "90%",
     padding: 5,
     alignSelf: "center",
     borderRadius: 10,
+
+
   },
-  resultsStyle: {
-    flex: 2,
-    padding: 10,
-    borderBottomWidth: 1,
+  resultsContainer: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    margin: 10,
+    padding: 20,
     borderRadius: 10,
-    backgroundColor: "#5979D9",
     shadowOpacity: 0.3,
+    backgroundColor: "#5979D960",
+
+  },
+
+  textView: {
+    borderBottomWidth: 1,    
   },
 
   resultsText: {
-    opacity: 1,
     color: "black",
+    fontFamily: "Avenir",
+
   },
   outViewStyle: {
     padding: 10,
