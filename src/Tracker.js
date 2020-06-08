@@ -6,6 +6,7 @@ import {
   Button,
   TextInput,
   FlatList,
+  TouchableWithoutFeedback
 } from "react-native";
 
 import Card from "../components/card";
@@ -57,11 +58,11 @@ export default class Tracker extends React.Component {
       <View style={styles.container}>
         
         <View style={styles.ViewFilterContainer}>
-          
+          <TouchableWithoutFeedback> 
           <View style={styles.filterButtonView}>
-            <Button title="Filter" fontFamily="Avenir" color="black"> </Button>
+              <Text>Filter </Text>
           </View>
-       
+          </TouchableWithoutFeedback>
         </View>
 
         <View style={styles.viewForInputContainer}>
