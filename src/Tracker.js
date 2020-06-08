@@ -6,10 +6,9 @@ import {
   Button,
   TextInput,
   FlatList,
-  TouchableWithoutFeedback
+  TouchableOpacity
 } from "react-native";
 
-import Card from "../components/card";
 
 const APP_ID = "9ef9baef";
 const APP_KEY = "f48b3d6c5374f60449cfe909f947a540";
@@ -56,13 +55,14 @@ export default class Tracker extends React.Component {
     return (
       //styling for navigation container
       <View style={styles.container}>
-        
         <View style={styles.ViewFilterContainer}>
-          <TouchableWithoutFeedback> 
-          <View style={styles.filterButtonView}>
-              <Text>Filter </Text>
-          </View>
-          </TouchableWithoutFeedback>
+          <TouchableOpacity
+          style = {styles.ViewFilterContainer}
+          >
+            <View style={styles.filterButtonView}>
+              <Text style = {styles.filterText}> Filter </Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.viewForInputContainer}>
@@ -72,39 +72,43 @@ export default class Tracker extends React.Component {
           >
             <Text style={styles.textColour}> Search Food </Text>
           </TextInput>
+          </View>
+
           <Button
             title="Search"
             onPress={() => this.fetchData(this.state.item)}
           />
-          <FlatList
-            style={styles.resultsBackground}
-            data={this.state.itemArray}
-            renderItem={({ item }) => (
-              <View style={styles.resultsContainer}>
-                <View style={styles.textView}>
-                  <Text style={styles.resultsText}>
-                    {item.food.label}
-                    {item.food.brand}
-                  </Text>
+
+          <View style={styles.paddingForResultsContainer}> 
+            <FlatList
+              style={styles.resultsBackground}
+              data={this.state.itemArray}
+              renderItem={({ item }) => (
+                <View style={styles.resultsContainer}>
+                  <View style={styles.textView}>
+                    <Text style={styles.resultsText}>
+                      {item.food.label}
+                      {item.food.brand}
+                    </Text>
+                  </View>
+                  <View style={styles.nutritionResultsText}>
+                    <Text style={styles.resultsTextSubInfo}>
+                      F: {Math.round(item.food.nutrients.FAT)}
+                    </Text>
+                    <Text style={styles.resultsTextSubInfo}>
+                      C: {Math.round(item.food.nutrients.CHOCDF)}
+                    </Text>
+                    <Text style={styles.resultsTextSubInfo}>
+                      P: {Math.round(item.food.nutrients.PROCNT)}
+                    </Text>
+                    <Text style={styles.resultsTextSubInfo}>
+                      K/Cal: {Math.round(item.food.nutrients.ENERC_KCAL)}
+                    </Text>
+                  </View>
                 </View>
-                <View style={styles.nutritionResultsText}>
-                  <Text style={styles.resultsTextSubInfo}>
-                    F: {Math.round(item.food.nutrients.FAT)}
-                  </Text>
-                  <Text style={styles.resultsTextSubInfo}>
-                    C: {Math.round(item.food.nutrients.CHOCDF)}
-                  </Text>
-                  <Text style={styles.resultsTextSubInfo}>
-                    P: {Math.round(item.food.nutrients.PROCNT)}
-                  </Text>
-                  <Text style={styles.resultsTextSubInfo}>
-                    K/Cal: {Math.round(item.food.nutrients.ENERC_KCAL)}
-                  </Text>
-                </View>
-              </View>
-            )}
-          />
-        </View>
+              )}
+            />
+            </View>
 
         <View style={styles.buttonContainer}>
           <View>
@@ -141,9 +145,18 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
 
+  filterText: {
+    color: "#919191"
+
+  },
+
   filterButtonView: {
-    borderWidth: 0.4, 
-},
+    shadowOpacity: 0.3,
+    padding: 5,
+    alignItems: "center",
+    backgroundColor: "white",
+    width: 70,
+  },
   buttonContainer: {
     width: "100%",
     flexDirection: "row",
@@ -155,8 +168,13 @@ const styles = StyleSheet.create({
   },
 
   viewForInputContainer: {
-    padding: 10,
+    paddingTop: 5,
+    paddingLeft: 20,
+    paddingRight: 20
+
+
   },
+
   textInputContainer: {
     backgroundColor: "white",
     borderColor: "black",
@@ -175,19 +193,18 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-
-    // backgroundColor: "blue"
   },
 
+  paddingForResultsContainer: {
+    padding: 20
+  },  
   resultsBackground: {
     height: "70%",
-    width: "90%",
-    padding: 5,
+    width: "100%",
     alignSelf: "center",
-    borderRadius: 10,
+    borderRadius: 5,
     borderWidth: 0.1,
     shadowOpacity: 0.7,
-
   },
   resultsContainer: {
     flexDirection: "column",
@@ -196,7 +213,6 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 5,
     backgroundColor: "#5979D9",
-
   },
 
   textView: {
