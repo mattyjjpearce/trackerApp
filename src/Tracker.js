@@ -8,13 +8,17 @@ import {
   FlatList,
   TouchableOpacity,
   Keyboard,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Image
 } from "react-native";
+
+
 
 const APP_ID = "9ef9baef";
 const APP_KEY = "f48b3d6c5374f60449cfe909f947a540";
 
 
+ 
 
 /**
  * Profile screen
@@ -57,7 +61,6 @@ export default class Tracker extends React.Component {
 
   };
 
- 
 
 
   render() {
