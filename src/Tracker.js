@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   },
 
   filterButtonView: {
-    borderWidth: 0.4, // 
+    borderWidth: 0.4, 
 },
   buttonContainer: {
     width: "100%",
