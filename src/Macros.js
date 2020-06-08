@@ -1,9 +1,42 @@
 import React from "react";
-import { StyleSheet, View, Button, Text} from "react-native";
+import { StyleSheet, View, Button, Text, TextInput, FlatList } from "react-native";
+
+const APP_ID = "9ef9baef";
+const APP_KEY = "f48b3d6c5374f60449cfe909f947a540";
 
 export default class Macros extends React.Component {
   static navigationOptions = {
     title: "Macros",
+  };
+
+  //storing results from the api into this local state
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+      dataSource: null,
+    };
+  }
+  //ingr is the key, and we let the user find
+
+  fetchData = (item) => {
+    console.log(item);
+    fetch(
+      `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
+    )
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+        // alert(JSON.stringify(responseJson)) //ingr this is your key this is wat the api will return for you. so we need to send whichver food item that we are looking for / can we let a user search and return an item? yes. heymaybe i can call you an explain to you yes on what?watspp? i do not have discord?..... wait teamviewer has call featureok    // can you show me how to search for an item? yes sure
+        this.setState({
+          itemArray: responseJson.parsed,
+          isLoading: false,
+          dataSource: null,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   render() {
@@ -12,7 +45,10 @@ export default class Macros extends React.Component {
     return (
       //styling for navigation container
       <View style={styles.container}>
+        
+        <View> 
         <Text> hi</Text>
+        </View>
 
         <View style={styles.buttonContainer}>
           <View>
