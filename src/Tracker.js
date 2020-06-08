@@ -141,9 +141,8 @@ const styles = StyleSheet.create({
   },
 
   filterButtonView: {
-    borderWidth: 0.4,
-    fontSize: 1
-  },
+    borderWidth: 0.4, // 
+},
   buttonContainer: {
     width: "100%",
     flexDirection: "row",
