@@ -55,11 +55,13 @@ export default class Tracker extends React.Component {
     return (
       //styling for navigation container
       <View style={styles.container}>
+        
         <View style={styles.ViewFilterContainer}>
+          
           <View style={styles.filterButtonView}>
-            <Button title="Filter" fontFamily="Avenir" color="black"  />
-
+            <Button title="Filter" fontFamily="Avenir" color="black"> </Button>
           </View>
+       
         </View>
 
         <View style={styles.viewForInputContainer}>
@@ -131,15 +133,16 @@ export default class Tracker extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-   
   },
   ViewFilterContainer: {
-    padding: 5,
+    paddingTop: 10,
+    paddingLeft: 10,
     alignItems: "flex-start",
   },
 
   filterButtonView: {
-   borderWidth: .4,
+    borderWidth: 0.4,
+    fontSize: 1
   },
   buttonContainer: {
     width: "100%",
@@ -182,6 +185,9 @@ const styles = StyleSheet.create({
     padding: 5,
     alignSelf: "center",
     borderRadius: 10,
+    borderWidth: 0.1,
+    shadowOpacity: 0.7,
+
   },
   resultsContainer: {
     flexDirection: "column",
@@ -189,8 +195,8 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 5,
     borderRadius: 5,
-    shadowOpacity: 0.3,
-    backgroundColor: "#5979D960",
+    backgroundColor: "#5979D9",
+
   },
 
   textView: {
