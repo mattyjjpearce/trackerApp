@@ -6,12 +6,15 @@ import {
   Button,
   TextInput,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  Keyboard,
+  TouchableWithoutFeedback
 } from "react-native";
-
 
 const APP_ID = "9ef9baef";
 const APP_KEY = "f48b3d6c5374f60449cfe909f947a540";
+
+
 
 /**
  * Profile screen
@@ -30,8 +33,9 @@ export default class Tracker extends React.Component {
     };
   }
   //This is fetching the data for info such as name and to get the item ID
-
+   
   fetchData = (item) => {
+
     console.log(item);
     fetch(
       `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
@@ -48,23 +52,19 @@ export default class Tracker extends React.Component {
       .catch((error) => {
         console.log(error);
       });
+      // dimisses keyboard if they press the button on the screen
+      Keyboard.dismiss()
+
   };
+
+ 
+
 
   render() {
     const { navigate, state } = this.props.navigation;
     return (
-      //styling for navigation container
-      <View style={styles.container}>
-        <View style={styles.ViewFilterContainer}>
-          <TouchableOpacity
-          style = {styles.ViewFilterContainer}
-          >
-            <View style={styles.filterButtonView}>
-              <Text style = {styles.filterText}> Filter </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
 
+      <View style={styles.container}> 
         <View style={styles.viewForInputContainer}>
           <TextInput
             onChangeText={(text) => this.setState({ item: text })}
@@ -72,43 +72,53 @@ export default class Tracker extends React.Component {
           >
             <Text style={styles.textColour}> Search Food </Text>
           </TextInput>
-          </View>
+        </View>
 
-          <Button
-            title="Search"
-            onPress={() => this.fetchData(this.state.item)}
-          />
-
-          <View style={styles.paddingForResultsContainer}> 
-            <FlatList
-              style={styles.resultsBackground}
-              data={this.state.itemArray}
-              renderItem={({ item }) => (
-                <View style={styles.resultsContainer}>
-                  <View style={styles.textView}>
-                    <Text style={styles.resultsText}>
-                      {item.food.label}
-                      {item.food.brand}
-                    </Text>
-                  </View>
-                  <View style={styles.nutritionResultsText}>
-                    <Text style={styles.resultsTextSubInfo}>
-                      F: {Math.round(item.food.nutrients.FAT)}
-                    </Text>
-                    <Text style={styles.resultsTextSubInfo}>
-                      C: {Math.round(item.food.nutrients.CHOCDF)}
-                    </Text>
-                    <Text style={styles.resultsTextSubInfo}>
-                      P: {Math.round(item.food.nutrients.PROCNT)}
-                    </Text>
-                    <Text style={styles.resultsTextSubInfo}>
-                      K/Cal: {Math.round(item.food.nutrients.ENERC_KCAL)}
-                    </Text>
-                  </View>
-                </View>
-              )}
-            />
+        <Button
+          title="Search"
+          onPress={() => this.fetchData(this.state.item)} 
+        />
+        <View style={styles.ViewFilterContainer}>
+          <TouchableOpacity style={styles.ViewFilterContainer}>
+            <View style={styles.filterButtonView}>
+              <Text style={styles.filterText}> Filter </Text>
             </View>
+          </TouchableOpacity>
+        </View>
+
+        
+
+
+        <View style={styles.paddingForResultsContainer}>
+          <FlatList
+            style={styles.resultsBackground}
+            data={this.state.itemArray}
+            renderItem={({ item }) => (
+              <View style={styles.resultsContainer}>
+                <View style={styles.textView}>
+                  <Text style={styles.resultsText}>
+                    {item.food.label}
+                    {item.food.brand}
+                  </Text>
+                </View>
+                <View style={styles.nutritionResultsText}>
+                  <Text style={styles.resultsTextSubInfo}>
+                    F: {Math.round(item.food.nutrients.FAT)}
+                  </Text>
+                  <Text style={styles.resultsTextSubInfo}>
+                    C: {Math.round(item.food.nutrients.CHOCDF)}
+                  </Text>
+                  <Text style={styles.resultsTextSubInfo}>
+                    P: {Math.round(item.food.nutrients.PROCNT)}
+                  </Text>
+                  <Text style={styles.resultsTextSubInfo}>
+                    K/Cal: {Math.round(item.food.nutrients.ENERC_KCAL)}
+                  </Text>
+                </View>
+              </View>
+            )}
+          />
+        </View>
 
         <View style={styles.buttonContainer}>
           <View>
@@ -131,6 +141,7 @@ export default class Tracker extends React.Component {
           />
         </View>
       </View>
+
     );
   }
 }
@@ -146,8 +157,7 @@ const styles = StyleSheet.create({
   },
 
   filterText: {
-    color: "#919191"
-
+    color: "#919191",
   },
 
   filterButtonView: {
@@ -161,26 +171,22 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     position: "absolute",
-    padding: 20,
+    padding: 10,
     bottom: 0,
     backgroundColor: "#5979D9",
     justifyContent: "space-evenly",
   },
 
   viewForInputContainer: {
-    paddingTop: 5,
+    paddingTop: 20,
     paddingLeft: 20,
-    paddingRight: 20
-
-
+    paddingRight: 20,
   },
 
   textInputContainer: {
+    borderRadius: 3,
     backgroundColor: "white",
     borderColor: "black",
-    borderWidth: 1,
-    borderLeftWidth: 1,
-    borderBottomWidth: 1,
     width: "70%",
     color: "#919191",
     fontSize: 18,
@@ -196,8 +202,9 @@ const styles = StyleSheet.create({
   },
 
   paddingForResultsContainer: {
-    padding: 20
-  },  
+    padding: 20,
+    paddingBottom: 50
+  },
   resultsBackground: {
     height: "70%",
     width: "100%",
