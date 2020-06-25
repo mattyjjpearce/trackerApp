@@ -1,5 +1,6 @@
-import React, { useCallback } from "react";
+import React from "react";
 import {
+  Modal,
   StyleSheet,
   View,
   Text,
@@ -8,17 +9,11 @@ import {
   FlatList,
   TouchableOpacity,
   Keyboard,
-  TouchableWithoutFeedback,
-  Image
 } from "react-native";
-
-
+import NewModal from "../components/modal";
 
 const APP_ID = "9ef9baef";
 const APP_KEY = "f48b3d6c5374f60449cfe909f947a540";
-
-
- 
 
 /**
  * Profile screen
@@ -34,44 +29,44 @@ export default class Tracker extends React.Component {
     this.state = {
       isLoading: true,
       dataSource: null,
+      show: false,
+      varFoodId: null,
     };
   }
-  //This is fetching the data for info such as name and to get the item ID
-   
-  fetchData = (item) => {
 
+  fetchData = (item) => {
     console.log(item);
+
     fetch(
       `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
     )
       .then((response) => response.json())
       .then((responseJson) => {
         console.log(responseJson);
-
-        //  alert(JSON.stringify(responseJson)); //ingr this is your key this is wat the api will return for you. so we need to send whichver food item that we are looking for / can we let a user search and return an item? yes. heymaybe i can call you an explain to you yes on what?watspp? i do not have discord?..... wait teamviewer has call featureok    // can you show me how to search for an item? yes sure
+        //   console.log(responseJson.hints[1].food.nutrients);
         this.setState({
+          // passing in all the hints info into itemArray, which contains all the info regarding the items
           itemArray: responseJson.hints,
         });
       })
       .catch((error) => {
         console.log(error);
       });
-      // dimisses keyboard if they press the button on the screen
-      Keyboard.dismiss()
-
+    // dimisses keyboard if they press the button on the screen
+    Keyboard.dismiss();
   };
-
-
 
   render() {
     const { navigate, state } = this.props.navigation;
-    return (
+    const show = this.props.show;
 
-      <View style={styles.container}> 
+    return (
+      <View style={styles.container}>
         <View style={styles.viewForInputContainer}>
           <TextInput
             onChangeText={(text) => this.setState({ item: text })}
             style={styles.textInputContainer}
+            clearTextOnFocus={true}
           >
             <Text style={styles.textColour}> Search Food </Text>
           </TextInput>
@@ -79,8 +74,9 @@ export default class Tracker extends React.Component {
 
         <Button
           title="Search"
-          onPress={() => this.fetchData(this.state.item)} 
+          onPress={() => this.fetchData(this.state.item)}
         />
+
         <View style={styles.ViewFilterContainer}>
           <TouchableOpacity style={styles.ViewFilterContainer}>
             <View style={styles.filterButtonView}>
@@ -88,37 +84,47 @@ export default class Tracker extends React.Component {
             </View>
           </TouchableOpacity>
         </View>
-
-        
-
-
         <View style={styles.paddingForResultsContainer}>
           <FlatList
             style={styles.resultsBackground}
             data={this.state.itemArray}
-            renderItem={({ item }) => (
-              <View style={styles.resultsContainer}>
-                <View style={styles.textView}>
-                  <Text style={styles.resultsText}>
-                    {item.food.label}
-                    {item.food.brand}
-                  </Text>
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                onPress={() =>
+                  this.setState({
+                    show: true,
+                    index: index
+                  })
+                }
+              >
+                <View style={styles.resultsContainer}>
+                  <View style={styles.textView}>
+                    <Text style={styles.resultsText}>
+                      {item.food.label}
+                      {item.food.brand}
+                    </Text>
+                  </View>
+                  <View style={styles.nutritionResultsText}>
+                    <Text style={styles.resultsTextSubInfo}>
+                      F: {Math.round(item.food.nutrients.FAT)}
+                    </Text>
+                    <Text style={styles.resultsTextSubInfo}>
+                      C: {Math.round(item.food.nutrients.CHOCDF)}
+                    </Text>
+                    <Text style={styles.resultsTextSubInfo}>
+                      P: {Math.round(item.food.nutrients.PROCNT)}
+                    </Text>
+                    <Text style={styles.resultsTextSubInfo}>
+                      K/Cal: {Math.round(item.food.nutrients.ENERC_KCAL)}
+                    </Text>
+                  </View>
                 </View>
-                <View style={styles.nutritionResultsText}>
-                  <Text style={styles.resultsTextSubInfo}>
-                    F: {Math.round(item.food.nutrients.FAT)}
-                  </Text>
-                  <Text style={styles.resultsTextSubInfo}>
-                    C: {Math.round(item.food.nutrients.CHOCDF)}
-                  </Text>
-                  <Text style={styles.resultsTextSubInfo}>
-                    P: {Math.round(item.food.nutrients.PROCNT)}
-                  </Text>
-                  <Text style={styles.resultsTextSubInfo}>
-                    K/Cal: {Math.round(item.food.nutrients.ENERC_KCAL)}
-                  </Text>
-                </View>
-              </View>
+                <NewModal
+                  showUs={this.state.show}
+                  toggleShow={() => this.setState({ show: false })}
+                  foodInfo={item}
+                ></NewModal>
+              </TouchableOpacity>
             )}
           />
         </View>
@@ -144,7 +150,6 @@ export default class Tracker extends React.Component {
           />
         </View>
       </View>
-
     );
   }
 }
@@ -206,7 +211,7 @@ const styles = StyleSheet.create({
 
   paddingForResultsContainer: {
     padding: 20,
-    paddingBottom: 50
+    paddingBottom: 50,
   },
   resultsBackground: {
     height: "70%",
@@ -246,5 +251,16 @@ const styles = StyleSheet.create({
   },
   resultsTextSubInfo: {
     paddingLeft: 5,
+  },
+
+  modalView: {
+    marginTop: 100,
+    height: "70%",
+    width: "95%",
+    alignSelf: "center",
+    borderRadius: 5,
+    borderWidth: 0.1,
+    shadowOpacity: 0.7,
+    backgroundColor: "white",
   },
 });

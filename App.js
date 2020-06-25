@@ -17,6 +17,8 @@ import Home from './src/Home';
 import Tracker from './src/Tracker';
 import Shops from './src/Shops';
 import Macros from './src/Macros';
+import foodInfo from './src/foodInfo';
+
 
 
 /**
@@ -30,6 +32,7 @@ const Navigator = createStackNavigator({
     Tracker: { screen: Tracker },
     Shops: {screen: Shops}, 
     Macros: {screen: Macros}, 
+    foodInfo: {screen: foodInfo},
 
 });
 
