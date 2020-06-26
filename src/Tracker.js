@@ -33,8 +33,11 @@ export default class Tracker extends React.Component {
       show: false,
       varFoodId: null,
       totalCalories: 0,
+      currentCalories: 0
     };
   }
+
+
 
 
   fetchData = (item) => {
@@ -60,24 +63,26 @@ export default class Tracker extends React.Component {
 
   fetchOnPressOpacity(item) {
   // need to get the real index value, at the moment only getting 0 as we have not set it to the one we pressed  console.log(this.state.itemArray[index]);
-    this.setState({
+    console.log(this.state.currentCalories)
+
+    this.state.currentCalories += item.food.nutrients.ENERC_KCAL;
+  this.setState({
       show: true,
    //   index: this.data.index
     });
 
     this.fetchData(this.state.item);
-    console.log(item)
+    console.log(item.food.nutrients.ENERC_KCAL)
   //  console.log(this.state.itemArray[1])
   }
 
   render() {
     const { navigate, state } = this.props.navigation;
     const show = this.props.show;
-    let currentCalories = 0;
 
     return (
       <View style={styles.container}>
-        <Text>{currentCalories} </Text>
+        <Text>{this.state.currentCalories} </Text>
         <View style={styles.viewForInputContainer}>
           <TextInput
             onChangeText={(text) => this.setState({ item: text })}
