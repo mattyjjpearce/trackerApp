@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Modal,
   StyleSheet,
   View,
   Text,
@@ -35,26 +34,28 @@ export default class Tracker extends React.Component {
   }
 
   fetchData = (item) => {
-    console.log(item);
-
     fetch(
       `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
     )
       .then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson);
-        //   console.log(responseJson.hints[1].food.nutrients);
         this.setState({
-          // passing in all the hints info into itemArray, which contains all the info regarding the items
           itemArray: responseJson.hints,
         });
       })
       .catch((error) => {
         console.log(error);
       });
-    // dimisses keyboard if they press the button on the screen
     Keyboard.dismiss();
   };
+
+  fetchOnPressOpacity() {
+    this.setState({
+      show: true,
+      
+    });
+    this.fetchData(this.state.item);
+  }
 
   render() {
     const { navigate, state } = this.props.navigation;
@@ -89,14 +90,7 @@ export default class Tracker extends React.Component {
             style={styles.resultsBackground}
             data={this.state.itemArray}
             renderItem={({ item, index }) => (
-              <TouchableOpacity
-                onPress={() =>
-                  this.setState({
-                    show: true,
-                    index: index
-                  })
-                }
-              >
+              <TouchableOpacity onPress={() => this.fetchOnPressOpacity()}>
                 <View style={styles.resultsContainer}>
                   <View style={styles.textView}>
                     <Text style={styles.resultsText}>
@@ -119,6 +113,7 @@ export default class Tracker extends React.Component {
                     </Text>
                   </View>
                 </View>
+                <Button title="button" onPress={() => console.log(this.state.itemArray[index])}>  </Button>
                 <NewModal
                   showUs={this.state.show}
                   toggleShow={() => this.setState({ show: false })}
