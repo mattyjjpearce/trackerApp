@@ -14,6 +14,8 @@ import NewModal from "../components/modal";
 const APP_ID = "9ef9baef";
 const APP_KEY = "f48b3d6c5374f60449cfe909f947a540";
 
+
+
 /**
  * Profile screen
  */
@@ -30,15 +32,20 @@ export default class Tracker extends React.Component {
       dataSource: null,
       show: false,
       varFoodId: null,
+      totalCalories: 0,
     };
   }
+
 
   fetchData = (item) => {
     fetch(
       `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
     )
       .then((response) => response.json())
-      .then((responseJson) => {
+      .then((responseJson) =>
+      {
+     //   console.log(responseJson);
+
         this.setState({
           itemArray: responseJson.hints,
         });
@@ -47,22 +54,30 @@ export default class Tracker extends React.Component {
         console.log(error);
       });
     Keyboard.dismiss();
+
+    
   };
 
-  fetchOnPressOpacity() {
+  fetchOnPressOpacity(item) {
+  // need to get the real index value, at the moment only getting 0 as we have not set it to the one we pressed  console.log(this.state.itemArray[index]);
     this.setState({
       show: true,
-      
+   //   index: this.data.index
     });
+
     this.fetchData(this.state.item);
+    console.log(item)
+  //  console.log(this.state.itemArray[1])
   }
 
   render() {
     const { navigate, state } = this.props.navigation;
     const show = this.props.show;
+    let currentCalories = 0;
 
     return (
       <View style={styles.container}>
+        <Text>{currentCalories} </Text>
         <View style={styles.viewForInputContainer}>
           <TextInput
             onChangeText={(text) => this.setState({ item: text })}
@@ -90,12 +105,13 @@ export default class Tracker extends React.Component {
             style={styles.resultsBackground}
             data={this.state.itemArray}
             renderItem={({ item, index }) => (
-              <TouchableOpacity onPress={() => this.fetchOnPressOpacity()}>
+              <TouchableOpacity onPress={() => this.fetchOnPressOpacity(item, index)}>
                 <View style={styles.resultsContainer}>
                   <View style={styles.textView}>
                     <Text style={styles.resultsText}>
                       {item.food.label}
                       {item.food.brand}
+                      {index}
                     </Text>
                   </View>
                   <View style={styles.nutritionResultsText}>
@@ -113,12 +129,6 @@ export default class Tracker extends React.Component {
                     </Text>
                   </View>
                 </View>
-                <Button title="button" onPress={() => console.log(this.state.itemArray[index])}>  </Button>
-                <NewModal
-                  showUs={this.state.show}
-                  toggleShow={() => this.setState({ show: false })}
-                  foodInfo={item}
-                ></NewModal>
               </TouchableOpacity>
             )}
           />
