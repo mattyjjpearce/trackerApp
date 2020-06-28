@@ -32,6 +32,7 @@ export default class Tracker extends React.Component {
     };
   }
 
+
   fetchData = (item) => {
     fetch(
       `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
@@ -79,6 +80,9 @@ export default class Tracker extends React.Component {
   }
 
   resetCalories = async () =>{
+    this.setState({
+      totalCalories: 0,
+    })
     try {
       await AsyncStorage.clear()
     } catch(e)
