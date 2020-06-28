@@ -8,7 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@react-native-community/masked-view": "^0.1.5",
+    "@react-native-community/masked-view": "^0.1.10",
     "barcode-reader": "^1.6.1",
     "expo": "~36.0.0",
     "react": "~16.9.0",
@@ -20,7 +20,7 @@
     "react-native-camera": "^3.28.0",
     "react-native-gesture-handler": "~1.5.0",
     "react-native-reanimated": "~1.4.0",
-    "react-native-safe-area-context": "0.6.0",
+    "react-native-safe-area-context": "^0.6.0",
     "react-native-safe-area-view": "^1.0.0",
     "react-native-scan-barcode": "^3.1.5",
     "react-native-screens": "2.0.0-alpha.12",
@@ -31,8 +31,9 @@
     "react-table-filter": "^2.0.1"
   },
   "devDependencies": {
-    "babel-preset-expo": "~8.0.0",
-    "@babel/core": "^7.0.0"
+    "@babel/core": "^7.0.0",
+    "@react-native-community/async-storage": "^1.11.0",
+    "babel-preset-expo": "~8.0.0"
   },
   "private": true
 }

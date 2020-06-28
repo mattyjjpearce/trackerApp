@@ -10,44 +10,35 @@ import {
   Keyboard,
 } from "react-native";
 import NewModal from "../components/modal";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const APP_ID = "9ef9baef";
 const APP_KEY = "f48b3d6c5374f60449cfe909f947a540";
 
-
-
-/**
- * Profile screen
- */
 export default class Tracker extends React.Component {
   static navigationOptions = {
     title: "Tracker",
   };
 
-  //storing results from the api into this local state
   constructor(props) {
     super(props);
+    this.getData();
+
     this.state = {
       isLoading: true,
       dataSource: null,
       show: false,
-      varFoodId: null,
       totalCalories: 0,
-      currentCalories: 0
     };
   }
-
-
-
 
   fetchData = (item) => {
     fetch(
       `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
     )
       .then((response) => response.json())
-      .then((responseJson) =>
-      {
-     //   console.log(responseJson);
+      .then((responseJson) => {
+        //   console.log(responseJson);
 
         this.setState({
           itemArray: responseJson.hints,
@@ -57,32 +48,52 @@ export default class Tracker extends React.Component {
         console.log(error);
       });
     Keyboard.dismiss();
-
-    
   };
 
-  fetchOnPressOpacity(item) {
-  // need to get the real index value, at the moment only getting 0 as we have not set it to the one we pressed  console.log(this.state.itemArray[index]);
-    console.log(this.state.currentCalories)
+  fetchOnPressOpacity = async (item) => {
+    console.log(this.state.totalCalories)
+    this.state.totalCalories += item.food.nutrients.ENERC_KCAL;
+    try {
+      this.setState({
 
-    this.state.currentCalories += item.food.nutrients.ENERC_KCAL;
-  this.setState({
-      show: true,
-   //   index: this.data.index
-    });
+      })
+      await AsyncStorage.setItem(
+        'totalCalories',
+        JSON.stringify(this.state.totalCalories)
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-    this.fetchData(this.state.item);
-    console.log(item.food.nutrients.ENERC_KCAL)
-  //  console.log(this.state.itemArray[1])
+  getData = async () => {
+    try {
+      const totalCalories = await AsyncStorage.getItem('totalCalories')
+
+      if (totalCalories !== null) {
+        this.setState({
+          totalCalories
+        });
+      }
+    } catch (error) {}
   }
 
+  resetCalories = async () =>{
+    try {
+      await AsyncStorage.clear()
+    } catch(e)
+     {
+       console.log(e)
+    }
+    }
+
   render() {
-    const { navigate, state } = this.props.navigation;
-    const show = this.props.show;
+    const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.container}>
-        <Text>{this.state.currentCalories} </Text>
+        <Button title="clear" onPress={() => this.resetCalories()}/>
+        <Text>{this.state.totalCalories}</Text>
         <View style={styles.viewForInputContainer}>
           <TextInput
             onChangeText={(text) => this.setState({ item: text })}
@@ -110,7 +121,9 @@ export default class Tracker extends React.Component {
             style={styles.resultsBackground}
             data={this.state.itemArray}
             renderItem={({ item, index }) => (
-              <TouchableOpacity onPress={() => this.fetchOnPressOpacity(item, index)}>
+              <TouchableOpacity
+                onPress={() => this.fetchOnPressOpacity(item, index)}
+              >
                 <View style={styles.resultsContainer}>
                   <View style={styles.textView}>
                     <Text style={styles.resultsText}>
