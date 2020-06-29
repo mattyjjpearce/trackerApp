@@ -13,32 +13,28 @@ export default class Home extends React.Component {
   //storing results from the api into this local state
   constructor(props) {
     super(props);
+    this.getData();
+
     this.state = {
       isLoading: true,
       dataSource: null,
     };
   }
-//ingr is the key, and we let the user find
 
-  fetchData = (item) => {
-    console.log(item)
-    fetch(
-        `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
-     
-        )
-        .then((response) => response.json())
-        .then((responseJson) => {
-            console.log(responseJson)
-            // alert(JSON.stringify(responseJson)) //ingr this is your key this is wat the api will return for you. so we need to send whichver food item that we are looking for / can we let a user search and return an item? yes. heymaybe i can call you an explain to you yes on what?watspp? i do not have discord?..... wait teamviewer has call featureok    // can you show me how to search for an item? yes sure
-          this.setState({
-            itemArray:responseJson.parsed,
-            isLoading: false,
-            dataSource: null,
-          })
-        })
-        .catch((error) => {
-            console.log(error)
-        })
+  getData = async () => {
+    try {
+      const totalCalories = await AsyncStorage.getItem("totalCalories");
+      if (totalCalories !== null) {
+        this.setState({
+            totalCalories
+        });
+      }
+    } catch (error) {}
+  };
+
+   log = () => {
+     console.log(this.state.totalCalories)
+
   }
 
   render() {
@@ -46,25 +42,9 @@ export default class Home extends React.Component {
     return (
       //styling for navigation container
       <View style={styles.container}>
-        <TextInput onChangeText={(text)=>this.setState({item:text})} style={styles.textInput} placeholder = "Input here"> </TextInput>
-        <Button title="Find"
-                onPress={() => this.fetchData(this.state.item)}
-        />
-
-        <FlatList 
-        style={{height:100,width:200}}
-        data = {this.state.itemArray} 
-        renderItem={({ item })=>
         
-        <View style={{flex:1}}>
-           <View> 
-              <Text style={{}}>Fat:</Text> 
-               <Text style={{}}>Fat: {item.food.nutrients.FAT}</Text> 
-           </View>
-            <Text>{item.food.nutrients.FIBTG}</Text>
-
-        </View>}
-        />
+      <Button title="button" onPress={() => this.log()}> </Button>
+        
         <View style={styles.buttonContainer}>
           <View>
             <Button

@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import NewModal from "../components/modal";
 import AsyncStorage from "@react-native-community/async-storage";
+import parseErrorStack from "react-native/Libraries/Core/Devtools/parseErrorStack";
 
 const APP_ID = "9ef9baef";
 const APP_KEY = "f48b3d6c5374f60449cfe909f947a540";
@@ -32,15 +33,12 @@ export default class Tracker extends React.Component {
     };
   }
 
-
   fetchData = (item) => {
     fetch(
       `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
     )
       .then((response) => response.json())
       .then((responseJson) => {
-        //   console.log(responseJson);
-
         this.setState({
           itemArray: responseJson.hints,
         });
@@ -52,14 +50,12 @@ export default class Tracker extends React.Component {
   };
 
   fetchOnPressOpacity = async (item) => {
-    console.log(this.state.totalCalories)
+    // console.log(this.state.totalCalories);
     this.state.totalCalories += item.food.nutrients.ENERC_KCAL;
     try {
-      this.setState({
-
-      })
+      this.setState({});
       await AsyncStorage.setItem(
-        'totalCalories',
+        "totalCalories",
         JSON.stringify(this.state.totalCalories)
       );
     } catch (error) {
@@ -69,35 +65,38 @@ export default class Tracker extends React.Component {
 
   getData = async () => {
     try {
-      const totalCalories = await AsyncStorage.getItem('totalCalories')
-
+      const totalCalories = await AsyncStorage.getItem("totalCalories");
+      const x = parseInt(totalCalories);
       if (totalCalories !== null) {
         this.setState({
-          totalCalories
+          totalCalories: x,
         });
       }
     } catch (error) {}
-  }
+  };
 
-  resetCalories = async () =>{
+  resetCalories = async () => {
     this.setState({
       totalCalories: 0,
-    })
+    });
     try {
-      await AsyncStorage.clear()
-    } catch(e)
-     {
-       console.log(e)
+      await AsyncStorage.clear();
+    } catch (e) {
+      console.log(e);
     }
-    }
+  };
 
   render() {
     const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.container}>
-        <Button title="clear" onPress={() => this.resetCalories()}/>
-        <Text>{this.state.totalCalories}</Text>
+        <Button title="clear" onPress={() => this.resetCalories()} />
+        <Text>
+          {" "}
+          Total Calories: {console.log(this.state.totalCalories)}
+          {this.state.totalCalories}
+        </Text>
         <View style={styles.viewForInputContainer}>
           <TextInput
             onChangeText={(text) => this.setState({ item: text })}
