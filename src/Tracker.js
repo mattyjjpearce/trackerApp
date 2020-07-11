@@ -9,9 +9,7 @@ import {
   TouchableOpacity,
   Keyboard,
 } from "react-native";
-import NewModal from "../components/modal";
 import AsyncStorage from "@react-native-community/async-storage";
-import parseErrorStack from "react-native/Libraries/Core/Devtools/parseErrorStack";
 
 const APP_ID = "9ef9baef";
 const APP_KEY = "f48b3d6c5374f60449cfe909f947a540";
@@ -33,6 +31,11 @@ export default class Tracker extends React.Component {
     };
   }
 
+  //  GoHomeWithPropsData = ({navigation, route}) => {
+  //   const []
+
+  // }
+
   fetchData = (item) => {
     fetch(
       `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
@@ -48,6 +51,8 @@ export default class Tracker extends React.Component {
       });
     Keyboard.dismiss();
   };
+
+  addCal = () => {};
 
   fetchOnPressOpacity = async (item) => {
     // console.log(this.state.totalCalories);
@@ -88,7 +93,7 @@ export default class Tracker extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
-
+    const totalCals = this.state.totalCalories;
     return (
       <View style={styles.container}>
         <Button title="clear" onPress={() => this.resetCalories()} />
@@ -168,10 +173,13 @@ export default class Tracker extends React.Component {
             onPress={() => navigate("Shops")}
             color="white"
           />
-          <Button title="Home" onPress={() => navigate("Home")} color="white" />
+          <Button title="Home" onPress={() => this.props.navigate("Home")} color="white" />
           <Button
             title="Macros"
-            onPress={() => navigate("Macros")}
+            onPress={() =>
+              navigate("Macros", {
+                  test: totalCals                 })
+            }
             color="white"
           />
         </View>
@@ -240,7 +248,7 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
   },
   resultsBackground: {
-    height: "70%",
+    height: "60%",
     width: "100%",
     alignSelf: "center",
     borderRadius: 5,

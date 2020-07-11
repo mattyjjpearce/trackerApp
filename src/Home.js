@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Button, Text, TextInput, FlatList } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Button,
+  Text,
+  TextInput,
+  FlatList,
+} from "react-native";
+import Tracker from "./Tracker";
+
 
 const APP_ID = "9ef9baef";
 const APP_KEY = "f48b3d6c5374f60449cfe909f947a540";
-
 
 export default class Home extends React.Component {
   static navigationOptions = {
@@ -26,25 +34,26 @@ export default class Home extends React.Component {
       const totalCalories = await AsyncStorage.getItem("totalCalories");
       if (totalCalories !== null) {
         this.setState({
-            totalCalories
+          totalCalories,
         });
       }
     } catch (error) {}
+    console.log(this.state);
   };
 
-   log = () => {
-     console.log(this.state.totalCalories)
-
-  }
+  log = () => {
+    console.log(this.props.navigation.state);
+  };
 
   render() {
     const { navigate } = this.props.navigation;
+    this.getData();
     return (
-      //styling for navigation container
       <View style={styles.container}>
-        
-      <Button title="button" onPress={() => this.log()}> </Button>
-        
+        <Button title="button" onPress={() => this.log()}>
+          {" "}
+        </Button>
+
         <View style={styles.buttonContainer}>
           <View>
             <Button
@@ -86,10 +95,10 @@ const styles = StyleSheet.create({
   },
 
   textInput: {
-      borderWidth:2,
-      borderColor:'black',
+    borderWidth: 2,
+    borderColor: "black",
 
-      height: 20,
-      width: 100
-  }
+    height: 20,
+    width: 100,
+  },
 });

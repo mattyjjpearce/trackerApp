@@ -19,35 +19,18 @@ export default class Macros extends React.Component {
   }
   //ingr is the key, and we let the user find
 
-  fetchData = (item) => {
-    console.log(item);
-    fetch(
-      `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
-    )
-      .then((response) => response.json())
-      .then((responseJson) => {
-        console.log(responseJson);
-        // alert(JSON.stringify(responseJson)) //ingr this is your key this is wat the api will return for you. so we need to send whichver food item that we are looking for / can we let a user search and return an item? yes. heymaybe i can call you an explain to you yes on what?watspp? i do not have discord?..... wait teamviewer has call featureok    // can you show me how to search for an item? yes sure
-        this.setState({
-          itemArray: responseJson.parsed,
-          isLoading: false,
-          dataSource: null,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
   render() {
     const { navigate } = this.props.navigation;
+    const data = this.props.navigation.getParam('test', 'nothing sent')
+    console.log(this.props.navigation.getParam());
 
     return (
       //styling for navigation container
       <View style={styles.container}>
         
         <View> 
-        <Text> hi</Text>
+        <Text>{JSON.stringify(data) }</Text>
         </View>
 
         <View style={styles.buttonContainer}>
