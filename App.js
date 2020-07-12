@@ -13,7 +13,6 @@ import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 
 // Components
-import Home from "./src/Home";
 import Tracker from "./src/Tracker";
 import Shops from "./src/Shops";
 import Macros from "./src/Macros";
@@ -25,7 +24,6 @@ import Macros from "./src/Macros";
  *
  */
 const Navigator = createStackNavigator({
-  Home: { screen: Home },
   Tracker: { screen: Tracker },
   Shops: { screen: Shops },
   Macros: { screen: Macros },

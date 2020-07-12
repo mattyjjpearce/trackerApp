@@ -28,13 +28,11 @@ export default class Tracker extends React.Component {
       dataSource: null,
       show: false,
       totalCalories: 0,
+      totalFat: 0,
+      totalCarbs: 0,
+      totalProtein: 0,
     };
   }
-
-  //  GoHomeWithPropsData = ({navigation, route}) => {
-  //   const []
-
-  // }
 
   fetchData = (item) => {
     fetch(
@@ -52,37 +50,50 @@ export default class Tracker extends React.Component {
     Keyboard.dismiss();
   };
 
-  addCal = () => {};
-
   fetchOnPressOpacity = async (item) => {
-    // console.log(this.state.totalCalories);
+    
     this.state.totalCalories += item.food.nutrients.ENERC_KCAL;
+    this.state.totalFat += item.food.nutrients.FAT;
+    this.state.totalCarbs += item.food.nutrients.CHOCDF;
+    this.state.totalProtein += item.food.nutrients.PROCNT;
+
+    
+    const firstPair = [
+      "totalCalories",
+      JSON.stringify(this.state.totalCalories)];
+    const secondPair = ["totalCarbs", JSON.stringify(this.state.totalCarbs)];
+    const thirdPair = ["totalProtein", JSON.stringify(this.state.totalProtein)];
+    const fourthPair = ["totalFat", JSON.stringify(this.state.totalFat)];
+
     try {
       this.setState({});
-      await AsyncStorage.setItem(
-        "totalCalories",
-        JSON.stringify(this.state.totalCalories)
-      );
+      var values = [firstPair, secondPair, thirdPair, fourthPair];
+      AsyncStorage.setItem("DATA_KEY", JSON.stringify(values))
+
     } catch (error) {
       console.log(error);
     }
   };
 
   getData = async () => {
+   
     try {
-      const totalCalories = await AsyncStorage.getItem("totalCalories");
-      const x = parseInt(totalCalories);
-      if (totalCalories !== null) {
-        this.setState({
-          totalCalories: x,
-        });
-      }
-    } catch (error) {}
+      AsyncStorage.multiGet(["key1", "key2"]).then(response => {
+        })    
+        // const x = parseInt()  
+
+  } catch(e) {
+      // read error
+    }    
+    console.log(values);
   };
 
   resetCalories = async () => {
     this.setState({
       totalCalories: 0,
+      totalFat: 0,
+      totalCarbs: 0,
+      totalProtein: 0,
     });
     try {
       await AsyncStorage.clear();
@@ -173,12 +184,12 @@ export default class Tracker extends React.Component {
             onPress={() => navigate("Shops")}
             color="white"
           />
-          <Button title="Home" onPress={() => this.props.navigate("Home")} color="white" />
           <Button
             title="Macros"
             onPress={() =>
               navigate("Macros", {
-                  test: totalCals                 })
+                totalCal: totalCals,
+              })
             }
             color="white"
           />
