@@ -1,41 +1,6 @@
-# React Native Navigation Starter Template
+**React-Native calorie and nutrition tracker, aimed at allowing users to diet easier!**
 
-A starter template for react native navigation.
+Require Expo as it is designed for an IOS device, using IOS simulator and Xcode.
 
-## Usage
-```git clone https://github.com/nordin-johan/react-native-navigation.git```
-
-```npm install```
-
-```npm start```
-
-**If you are having problems:**
-
-There is currently(January 2020) a bug in a node module: \node_modules\metro-config\src\defaults\blacklist.js.
-
-Open up blacklist.js and replace:
-
-```
-var sharedBlacklist = [
-  /node_modules[/\\]react[/\\]dist[/\\].*/,
-  /website\/node_modules\/.*/,
-  /heapCapture\/bundle\.js/,
-  /.*\/__tests__\/.*/
-];
-```
-
-With:
-
-```
-var sharedBlacklist = [
-  /node_modules[\/\\]react[\/\\]dist[\/\\].*/,
-  /website\/node_modules\/.*/,
-  /heapCapture\/bundle\.js/,
-  /.*\/__tests__\/.*/
-];
-```
-
-## Prerequisites
-
-* Node >= v.12
-* Expo CLI
+Navigation using Stack-Navigation
+Asynchronous storage for keeping the data for the user (such as their daily calories) 
