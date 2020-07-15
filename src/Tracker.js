@@ -70,6 +70,7 @@ export default class Tracker extends React.Component {
       var values = [firstPair, secondPair, thirdPair, fourthPair];
       AsyncStorage.setItem("DATA_KEY", JSON.stringify(values))
 
+
     } catch (error) {
       console.log(error);
     }
@@ -148,7 +149,6 @@ export default class Tracker extends React.Component {
                     <Text style={styles.resultsText}>
                       {item.food.label}
                       {item.food.brand}
-                      {index}
                     </Text>
                   </View>
                   <View style={styles.nutritionResultsText}>
