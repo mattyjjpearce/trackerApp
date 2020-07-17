@@ -76,6 +76,8 @@ export default class Macros extends React.Component {
           </View>
           <View style={styles.viewOfMacros}>
             <Text>Cals: {this.state.totalCalsSet}</Text>
+            <Text alignSelf="center">{Math.floor(this.state.CaloriePercentage)}%</Text>
+
             <View style={styles.progressBar}>
               <Animated.View
                 style={
@@ -84,8 +86,6 @@ export default class Macros extends React.Component {
                 }
               />
             </View>
-            <Text>50%</Text>
-
             <Text>Fat: {this.state.CalsFatInput}</Text>
             <Text>Carbs: {this.state.CalsCarbsInput}</Text>
             <Text>Protein: {this.state.CalsProteinInput}</Text>
