@@ -7,6 +7,7 @@ import {
   TextInput,
   FlatList,
   Modal,
+  Animated,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -27,6 +28,7 @@ export default class Macros extends React.Component {
       CalsFatInput: 0,
       CalsProteinInput: 0,
       CalsCarbsInput: 0,
+      CaloriePercentage: 0,
     };
     console.log(props);
   }
@@ -42,18 +44,23 @@ export default class Macros extends React.Component {
     let CalsFatInput = FatInput * 9;
     let CalsCarbsInput = CarbsInput * 4;
     let totalCalsSet = CalsCarbsInput + CalsFatInput + CalsProteinInput;
+
+    let CaloriePercentage = (totalCalsSet / 2400) * 100;
     this.setState({
       totalCalsSet: totalCalsSet,
       CalsProteinInput: ProteinInput,
       CalsFatInput: FatInput,
       CalsCarbsInput: CalsCarbsInput,
       showModal: false,
+      CaloriePercentage: CaloriePercentage,
     });
     console.log(totalCalsSet);
   };
 
   render() {
     const { navigate } = this.props.navigation;
+    let CaloriePercentage = this.state.CaloriePercentage + "%";
+    console.log(CaloriePercentage);
 
     let totalCals = this.props.navigation.getParam("totalCal", "nothing sent");
     totalCals = JSON.stringify(totalCals);
@@ -62,19 +69,27 @@ export default class Macros extends React.Component {
       //styling for navigation container
       <View style={styles.container}>
         <View style={styles.topStyle}>
-        <View style={styles.setMacros}>
+          <View style={styles.setMacros}>
             <TouchableOpacity onPress={() => this.setMacroGoalModal()}>
               <Text> Set Daily Macro Goal </Text>
             </TouchableOpacity>
           </View>
-          <View>
+          <View style={styles.viewOfMacros}>
             <Text>Cals: {this.state.totalCalsSet}</Text>
+            <View style={styles.progressBar}>
+              <Animated.View
+                style={
+                  ([StyleSheet.absoluteFill],
+                  { backgroundColor: "#8BED4F", width: CaloriePercentage })
+                }
+              />
+            </View>
+            <Text>50%</Text>
+
             <Text>Fat: {this.state.CalsFatInput}</Text>
             <Text>Carbs: {this.state.CalsCarbsInput}</Text>
             <Text>Protein: {this.state.CalsProteinInput}</Text>
           </View>
-
-    
 
           <View>
             <Modal
@@ -217,5 +232,20 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "#5979D9",
     justifyContent: "space-evenly",
+  },
+
+  progressBar: {
+    margin: 10,
+    height: 20,
+    width: "70%",
+    backgroundColor: "white",
+    borderColor: "#000",
+    borderWidth: 1,
+    borderRadius: 5,
+    alignSelf: "center",
+    flexDirection: "row",
+  },
+  viewOfMacros: {
+    margin: 5,
   },
 });
