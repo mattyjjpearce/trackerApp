@@ -58,9 +58,7 @@ export default class Tracker extends React.Component {
     this.state.totalProtein += item.food.nutrients.PROCNT;
 
     
-    const firstPair = [
-      "totalCalories",
-      JSON.stringify(this.state.totalCalories)];
+    const firstPair = ["totalCalories", JSON.stringify(this.state.totalCalories)];
     const secondPair = ["totalCarbs", JSON.stringify(this.state.totalCarbs)];
     const thirdPair = ["totalProtein", JSON.stringify(this.state.totalProtein)];
     const fourthPair = ["totalFat", JSON.stringify(this.state.totalFat)];
@@ -81,12 +79,10 @@ export default class Tracker extends React.Component {
     try {
       AsyncStorage.multiGet(["key1", "key2"]).then(response => {
         })    
-        // const x = parseInt()  
 
   } catch(e) {
       // read error
     }    
-    console.log(values);
   };
 
   resetCalories = async () => {
@@ -106,11 +102,14 @@ export default class Tracker extends React.Component {
   render() {
     const { navigate } = this.props.navigation;
     const totalCals = this.state.totalCalories;
+    const totalCarbs = this.state.totalCarbs;
+    const totalProtein = this.state.totalProtein;
+    const totalFat = this.state.totalFat;
+
     return (
       <View style={styles.container}>
         <Button title="clear" onPress={() => this.resetCalories()} />
         <Text>
-          {" "}
           Total Calories: {console.log(this.state.totalCalories)}
           {this.state.totalCalories}
         </Text>
@@ -189,6 +188,9 @@ export default class Tracker extends React.Component {
             onPress={() =>
               navigate("Macros", {
                 totalCal: totalCals,
+                totalCarbs: totalCarbs,
+                totalProtein: totalProtein,
+                totalFat: totalFat,
               })
             }
             color="white"

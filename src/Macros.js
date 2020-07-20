@@ -5,7 +5,6 @@ import {
   Button,
   Text,
   TextInput,
-  FlatList,
   Modal,
   Animated,
 } from "react-native";
@@ -19,19 +18,29 @@ export default class Macros extends React.Component {
 
   constructor(props) {
     super(props);
+    this.getData();
+
+
     this.state = {
       isLoading: true,
       dataSource: null,
       totalCalsSet: 0,
       showModal: false,
-      UsersDailyCalories: 0,
+      UsedDailyCalories: this.props.navigation.getParam("totalCal", "nothing sent"),
+      UsedDailyFat: this.props.navigation.getParam("totalFat", "nothing sent"),
+      UsedDailyCarbs: 0,
+      UsedDailyProtein: 0,
       CalsFatInput: 0,
       CalsProteinInput: 0,
       CalsCarbsInput: 0,
       CaloriePercentage: 0,
     };
+    this.addMacrosManually();
+
     console.log(props);
   }
+
+
 
   setMacroGoalModal = () => {
     this.setState({
@@ -39,7 +48,25 @@ export default class Macros extends React.Component {
     });
   };
 
-  setMacros = (ProteinInput, FatInput, CarbsInput) => {
+  addMacrosManually = (ProteinInput, FatInput, CarbsInput) => {
+
+    let CalsProteinInput = ProteinInput * 4;
+    let CalsFatInput = FatInput * 9;
+    let CalsCarbsInput = CarbsInput * 4;
+    let totalCalsSet = CalsCarbsInput + CalsFatInput + CalsProteinInput;
+
+    this.setState({
+      UsedDailyCalories : +totalCalsSet,
+      UsedDailyFat: +FatInput,
+      UsedDailyCarbs: +CarbsInput,
+      UsedDailyProtein: +ProteinInput,
+    });
+    console.log(this.state.UsedDailyCalories);
+
+
+  };
+
+  setMacros = async (ProteinInput, FatInput, CarbsInput) => {
     let CalsProteinInput = ProteinInput * 4;
     let CalsFatInput = FatInput * 9;
     let CalsCarbsInput = CarbsInput * 4;
@@ -55,15 +82,36 @@ export default class Macros extends React.Component {
       CaloriePercentage: CaloriePercentage,
     });
     console.log(totalCalsSet);
+
   };
 
+
+
+  getData = async () => {
+
+    try {
+      AsyncStorage.multiGet(["key1", "key2"]).then(response => {
+      })
+
+    } catch(e) {
+      // read error
+    }
+  };
+
+
+
+
   render() {
+
+
     const { navigate } = this.props.navigation;
     let CaloriePercentage = this.state.CaloriePercentage + "%";
-    console.log(CaloriePercentage);
 
-    let totalCals = this.props.navigation.getParam("totalCal", "nothing sent");
-    totalCals = JSON.stringify(totalCals);
+//    let totalCals = this.props.navigation.getParam("totalCal", "nothing sent");
+ //   totalCals = JSON.stringify(totalCals);
+
+    let totalCarbs = this.props.navigation.getParam("totalCarbs", "nothing sent");
+    totalCarbs = JSON.stringify(totalCarbs);
 
     return (
       //styling for navigation container
@@ -76,7 +124,7 @@ export default class Macros extends React.Component {
           </View>
           <View style={styles.viewOfMacros}>
             <Text>Cals: {this.state.totalCalsSet}</Text>
-            <Text alignSelf="center">{Math.floor(this.state.CaloriePercentage)}%</Text>
+            <Text>{Math.floor(this.state.CaloriePercentage)}%</Text>
 
             <View style={styles.progressBar}>
               <Animated.View
@@ -151,10 +199,12 @@ export default class Macros extends React.Component {
               </Button>
             </Modal>
           </View>
+          <Button title="this" onPress={() => this.addMacrosManually()}> </Button>
         </View>
 
         <View>
-          <Text>{totalCals}</Text>
+          <Text>{totalCarbs}</Text>
+
         </View>
 
         <View style={styles.buttonContainer}>
