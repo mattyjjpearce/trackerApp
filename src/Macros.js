@@ -26,6 +26,7 @@ export default class Macros extends React.Component {
       dataSource: null,
       totalCalsSet: 0,
       showModal: false,
+      showModal2: false,
       UsedDailyCalories: this.props.navigation.getParam("totalCal", "nothing sent"),
       UsedDailyFat: this.props.navigation.getParam("totalFat", "nothing sent"),
       UsedDailyCarbs: 0,
@@ -48,18 +49,28 @@ export default class Macros extends React.Component {
     });
   };
 
+  AddMacrosModal = () => {
+    this.setState({
+      showModal2: true,
+    });
+  };
+
   addMacrosManually = (ProteinInput, FatInput, CarbsInput) => {
+
+    //Works second time I click the button which is odd. (only for Cals so far)
 
     let CalsProteinInput = ProteinInput * 4;
     let CalsFatInput = FatInput * 9;
     let CalsCarbsInput = CarbsInput * 4;
-    let totalCalsSet = CalsCarbsInput + CalsFatInput + CalsProteinInput;
+
+    let CalsCalorieInput = CalsCarbsInput + CalsFatInput + CalsProteinInput;
 
     this.setState({
-      UsedDailyCalories : +totalCalsSet,
+      UsedDailyCalories : this.state.UsedDailyCalories+CalsCalorieInput,
       UsedDailyFat: +FatInput,
       UsedDailyCarbs: +CarbsInput,
       UsedDailyProtein: +ProteinInput,
+      showModal2: false,
     });
     console.log(this.state.UsedDailyCalories);
 
@@ -122,6 +133,12 @@ export default class Macros extends React.Component {
               <Text> Set Daily Macro Goal </Text>
             </TouchableOpacity>
           </View>
+          <View>
+            <TouchableOpacity  style={styles.setMacros} onPress={() => this.AddMacrosModal()}>
+            <Text> add Daily Macro Goal </Text>
+          </TouchableOpacity>
+          </View>
+
           <View style={styles.viewOfMacros}>
             <Text>Cals: {this.state.totalCalsSet}</Text>
             <Text>{Math.floor(this.state.CaloriePercentage)}%</Text>
@@ -199,7 +216,63 @@ export default class Macros extends React.Component {
               </Button>
             </Modal>
           </View>
-          <Button title="this" onPress={() => this.addMacrosManually()}> </Button>
+        </View>
+
+        <View>
+          <Modal
+              transparent={false}
+              visible={this.state.showModal2}
+              animationType="slide"
+              presentationStyle="formSheet"
+          >
+            <View style={styles.modalView}>
+              <TextInput
+                  style={styles.textInputStyle}
+                  onChangeText={(text) => this.setState({ FatInput: text })}
+                  clearTextOnFocus={true}
+              >
+                <Text>Enter Fats</Text>
+              </TextInput>
+            </View>
+            <View style={styles.modalView}>
+              <TextInput
+                  style={styles.textInputStyle}
+                  onChangeText={(text) => this.setState({ CarbsInput: text })}
+                  clearTextOnFocus={true}
+              >
+                <Text>Enter Carbs</Text>
+              </TextInput>
+            </View>
+
+            <View style={styles.modalView}>
+              <TextInput
+                  style={styles.textInputStyle}
+                  onChangeText={(text) => this.setState({ ProteinInput: text })}
+                  clearTextOnFocus={true}
+              >
+                <Text>Enter Protein</Text>
+              </TextInput>
+            </View>
+
+            <Button
+                title="Add Macros"
+                onPress={() =>
+                    this.addMacrosManually(this.state.ProteinInput, this.state.FatInput, this.state.CarbsInput)
+                }
+                color="Black"
+            />
+
+            <Button
+                title="Cancel"
+                onPress={() =>
+                    this.setState({
+                      showModal2: false,
+                    })
+                }
+            >
+              {" "}
+            </Button>
+          </Modal>
         </View>
 
         <View>
