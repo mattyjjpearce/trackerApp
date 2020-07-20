@@ -3,17 +3,14 @@
 A starter template for react native navigation.
 
 ## Usage
-```git clone https://github.com/nordin-johan/react-native-navigation.git```
 
 ```npm install```
 
-```npm start```
+Requires expo for the server alongside Xcode for the IOS simulator
 
 **If you are having problems:**
 
-There is currently(January 2020) a bug in a node module: \node_modules\metro-config\src\defaults\blacklist.js.
-
-Open up blacklist.js and replace:
+Track your daily calories, either manually entering them or finding a food on the database. 
 
 ```
 var sharedBlacklist = [
