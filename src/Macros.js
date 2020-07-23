@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-community/async-storage";
+import {useDispatch} from "react-redux";
 
 export default class Macros extends React.Component {
   static navigationOptions = {
@@ -27,8 +28,8 @@ export default class Macros extends React.Component {
       totalCalsSet: 0,
       showModal: false,
       showModal2: false,
-      UsedDailyCalories: this.props.navigation.getParam("totalCal", "nothing sent"),
-      UsedDailyFat: this.props.navigation.getParam("totalFat", "nothing sent"),
+      UsedDailyCalories: 0,
+      UsedDailyFat: +this.props.navigation.getParam("totalFat", "nothing sent"),
       UsedDailyCarbs: 0,
       UsedDailyProtein: 0,
       CalsFatInput: 0,
@@ -36,9 +37,10 @@ export default class Macros extends React.Component {
       CalsCarbsInput: 0,
       CaloriePercentage: 0,
     };
-    this.addMacrosManually();
 
-    console.log(props);
+    let calsTakenFromTracker = this.props.navigation.getParam("totalCal", "nothing sent");
+    this.state.UsedDailyCalories += calsTakenFromTracker;
+
   }
 
 
@@ -57,16 +59,14 @@ export default class Macros extends React.Component {
 
   addMacrosManually = (ProteinInput, FatInput, CarbsInput) => {
 
-    //Works second time I click the button which is odd. (only for Cals so far)
-
     let CalsProteinInput = ProteinInput * 4;
     let CalsFatInput = FatInput * 9;
     let CalsCarbsInput = CarbsInput * 4;
 
     let CalsCalorieInput = CalsCarbsInput + CalsFatInput + CalsProteinInput;
-
+    let withAddedCalories = this.state.UsedDailyCalories + CalsCalorieInput;
     this.setState({
-      UsedDailyCalories : this.state.UsedDailyCalories+CalsCalorieInput,
+      UsedDailyCalories :withAddedCalories,
       UsedDailyFat: +FatInput,
       UsedDailyCarbs: +CarbsInput,
       UsedDailyProtein: +ProteinInput,
@@ -74,6 +74,21 @@ export default class Macros extends React.Component {
     });
     console.log(this.state.UsedDailyCalories);
 
+
+    const firstPair = ["UsedTotalCalories", JSON.stringify(this.state.UsedDailyCalories)];
+    const secondPair = ["UsedTotalCarbs", JSON.stringify(this.state.UsedDailyCarbs)];
+    const thirdPair = ["UsedTotalProtein", JSON.stringify(this.state.UsedDailyProtein)];
+    const fourthPair = ["UsedTotalFat", JSON.stringify(this.state.UsedDailyFat)];
+
+    try {
+      this.setState({});
+      var usedValues = [firstPair, secondPair, thirdPair, fourthPair];
+      AsyncStorage.setItem("DATA_KEY", JSON.stringify(usedValues))
+
+
+    } catch (error) {
+      console.log(error);
+    }
 
   };
 
@@ -93,6 +108,22 @@ export default class Macros extends React.Component {
       CaloriePercentage: CaloriePercentage,
     });
     console.log(totalCalsSet);
+
+
+    const firstPair = ["totalCalsSet", JSON.stringify(this.state.totalCalories)];
+    const secondPair = ["totalCarbsSet", JSON.stringify(CarbsInput)];
+    const thirdPair = ["totalProteinSet", JSON.stringify(ProteinInput)];
+    const fourthPair = ["totalFatSet", JSON.stringify(FatInput)];
+
+    try {
+      this.setState({});
+      var setValues = [firstPair, secondPair, thirdPair, fourthPair];
+      AsyncStorage.setItem("DATA_KEY", JSON.stringify(setValues))
+
+
+    } catch (error) {
+      console.log(error);
+    }
 
   };
 
@@ -124,10 +155,14 @@ export default class Macros extends React.Component {
     let totalCarbs = this.props.navigation.getParam("totalCarbs", "nothing sent");
     totalCarbs = JSON.stringify(totalCarbs);
 
+
     return (
       //styling for navigation container
       <View style={styles.container}>
         <View style={styles.topStyle}>
+          <Text>{this.state.UsedDailyCalories} </Text>
+          <Text>{this.state.UsedDailyCarbs} </Text>
+
           <View style={styles.setMacros}>
             <TouchableOpacity onPress={() => this.setMacroGoalModal()}>
               <Text> Set Daily Macro Goal </Text>
