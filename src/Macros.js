@@ -37,11 +37,16 @@ export default class Macros extends React.Component {
       CalsProteinInput: 0,
       CalsCarbsInput: 0,
       CaloriePercentage: 0,
-  
+      FatPercentage: 0,
+      CarbPercentage: 0,
+      ProteinPercentage: 0,
+      FatSet: 0,
+      CarbsSet: 0,
+      ProteinSet: 0,
     };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.setState({
       CaloriesFromTracker: this.props.navigation.getParam(
         "totalCals",
@@ -124,7 +129,6 @@ export default class Macros extends React.Component {
     }
 
     this.getPercent();
-
   };
 
   setMacros = async (ProteinInput, FatInput, CarbsInput) => {
@@ -133,13 +137,15 @@ export default class Macros extends React.Component {
     let CalsCarbsInput = CarbsInput * 4;
     let totalCalsSet = CalsCarbsInput + CalsFatInput + CalsProteinInput;
 
-    
     this.setState({
       totalCalsSet: totalCalsSet,
       CalsProteinInput: ProteinInput,
-      CalsFatInput: FatInput,
+      CalsFatInput: CalsFatInput,
       CalsCarbsInput: CalsCarbsInput,
       showModal: false,
+      FatSet: FatInput,
+      CarbsSet: CarbsInput,
+      ProteinSet: ProteinInput,
     });
 
     const firstPair = [
@@ -167,14 +173,22 @@ export default class Macros extends React.Component {
     }
   };
 
-  getPercent = () =>{
-    let CaloriePercentage = (this.state.UsedDailyCalories / this.state.totalCalsSet) * 100;
+  getPercent = () => {
+    let CaloriePercentage =
+      (this.state.UsedDailyCalories / this.state.totalCalsSet) * 100;
+    let FatPercentage = (this.state.UsedDailyFat / this.state.FatSet) * 100;
+    let CarbPercentage =
+      (this.state.UsedDailyCarbs / this.state.CarbsSet) * 100;
+    let ProteinPercentage =
+      (this.state.UsedDailyProtein / this.state.ProteinSet) * 100;
 
     this.setState({
-      CaloriePercentage: CaloriePercentage
-    })
-
-  }
+      CaloriePercentage: CaloriePercentage,
+      FatPercentage: FatPercentage,
+      CarbPercentage: CarbPercentage,
+      ProteinPercentage: ProteinPercentage,
+    });
+  };
 
   render() {
     console.log(this.state.UsedDailyCalories);
@@ -202,9 +216,14 @@ export default class Macros extends React.Component {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.viewOfMacros}>
-            <Text>Cals: {this.state.totalCalsSet}</Text>
-            
+
+{/* Displaying the Progress bars etc */}
+          <View>
+            <View style={styles.viewOfMacros}>
+              <Text>Daily Calories: {this.state.totalCalsSet} </Text>
+               <Text> - {this.state.UsedDailyCalories} </Text> 
+               <Text> = {Math.floor(this.state.CaloriePercentage)}%</Text>
+            </View>
 
             <View style={styles.progressBar}>
               <Animated.View
@@ -213,12 +232,12 @@ export default class Macros extends React.Component {
                   { backgroundColor: "#8BED4F", width: CaloriePercentage })
                 }
               />
-              <Text>{Math.floor(this.state.CaloriePercentage)}%</Text>
             </View>
-            <Text>Fat: {this.state.CalsFatInput}</Text>
-            <Text>Carbs: {this.state.CalsCarbsInput}</Text>
-            <Text>Protein: {this.state.CalsProteinInput}</Text>
           </View>
+
+
+
+
 
           <View>
             <Modal
@@ -290,13 +309,13 @@ export default class Macros extends React.Component {
             presentationStyle="formSheet"
           >
             <View style={styles.modalView}>
-                <View style={styles.searhedStyle}> 
+              <View style={styles.searhedStyle}>
                 <Text> Item you recently searched: </Text>
                 <Text> {this.state.foodLabelFromTracker} </Text>
                 <Text> Fat: {this.state.FatsFromTracker} </Text>
                 <Text> Carbs: {this.state.CarbsFromTracker} </Text>
                 <Text> Protein: {this.state.ProteinFromTracker} </Text>
-                </View>
+              </View>
 
               <TextInput
                 style={styles.textInputStyle}
@@ -438,11 +457,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   viewOfMacros: {
-    margin: 5,
+    paddingTop: 20,
+    alignSelf: "center",
+    flexDirection: "row"
   },
 
   searhedStyle: {
     padding: 5,
-    borderWidth: 1
-  }
+    borderWidth: 1,
+  },
 });
