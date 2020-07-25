@@ -37,6 +37,12 @@ export default class Macros extends React.Component {
       CalsProteinInput: 0,
       CalsCarbsInput: 0,
       CaloriePercentage: 0,
+  
+    };
+  }
+
+  componentDidMount(){
+    this.setState({
       CaloriesFromTracker: this.props.navigation.getParam(
         "totalCals",
         "nothing sent"
@@ -57,7 +63,7 @@ export default class Macros extends React.Component {
         "label",
         "nothing sent"
       ),
-    };
+    });
   }
 
   setMacroGoalModal = () => {
@@ -198,7 +204,7 @@ export default class Macros extends React.Component {
 
           <View style={styles.viewOfMacros}>
             <Text>Cals: {this.state.totalCalsSet}</Text>
-            <Text>{Math.floor(this.state.CaloriePercentage)}%</Text>
+            
 
             <View style={styles.progressBar}>
               <Animated.View
@@ -207,6 +213,7 @@ export default class Macros extends React.Component {
                   { backgroundColor: "#8BED4F", width: CaloriePercentage })
                 }
               />
+              <Text>{Math.floor(this.state.CaloriePercentage)}%</Text>
             </View>
             <Text>Fat: {this.state.CalsFatInput}</Text>
             <Text>Carbs: {this.state.CalsCarbsInput}</Text>
