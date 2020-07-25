@@ -23,9 +23,11 @@ import Macros from "./src/Macros";
  *
  */
 const Navigator = createStackNavigator({
+  Macros: { screen: Macros },
   Tracker: { screen: Tracker },
   Shops: { screen: Shops },
-  Macros: { screen: Macros },
+
+
 });
 
 /**

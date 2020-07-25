@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-community/async-storage";
-import {useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 
 export default class Macros extends React.Component {
   static navigationOptions = {
@@ -21,6 +21,7 @@ export default class Macros extends React.Component {
     super(props);
     this.getData();
 
+    //redesign the entire project.
 
     this.state = {
       isLoading: true,
@@ -29,21 +30,35 @@ export default class Macros extends React.Component {
       showModal: false,
       showModal2: false,
       UsedDailyCalories: 0,
-      UsedDailyFat: +this.props.navigation.getParam("totalFat", "nothing sent"),
+      UsedDailyFat: 0,
       UsedDailyCarbs: 0,
       UsedDailyProtein: 0,
       CalsFatInput: 0,
       CalsProteinInput: 0,
       CalsCarbsInput: 0,
       CaloriePercentage: 0,
+      CaloriesFromTracker: this.props.navigation.getParam(
+        "totalCals",
+        "nothing sent"
+      ),
+      FatsFromTracker: this.props.navigation.getParam(
+        "totalFat",
+        "nothing sent"
+      ),
+      CarbsFromTracker: this.props.navigation.getParam(
+        "totalCarbs",
+        "nothing sent"
+      ),
+      ProteinFromTracker: this.props.navigation.getParam(
+        "totalProtein",
+        "nothing sent"
+      ),
+      foodLabelFromTracker: this.props.navigation.getParam(
+        "label",
+        "nothing sent"
+      ),
     };
-
-    let calsTakenFromTracker = this.props.navigation.getParam("totalCal", "nothing sent");
-    this.state.UsedDailyCalories += calsTakenFromTracker;
-
   }
-
-
 
   setMacroGoalModal = () => {
     this.setState({
@@ -58,37 +73,51 @@ export default class Macros extends React.Component {
   };
 
   addMacrosManually = (ProteinInput, FatInput, CarbsInput) => {
-
     let CalsProteinInput = ProteinInput * 4;
     let CalsFatInput = FatInput * 9;
     let CalsCarbsInput = CarbsInput * 4;
 
     let CalsCalorieInput = CalsCarbsInput + CalsFatInput + CalsProteinInput;
-    let withAddedCalories = this.state.UsedDailyCalories + CalsCalorieInput;
+
+    this.state.UsedDailyCalories += CalsCalorieInput;
+    this.state.UsedDailyCarbs += parseInt(CarbsInput);
+    this.state.UsedDailyFat += parseInt(FatInput);
+    this.state.UsedDailyProtein += parseInt(ProteinInput);
+
     this.setState({
-      UsedDailyCalories :withAddedCalories,
-      UsedDailyFat: +FatInput,
-      UsedDailyCarbs: +CarbsInput,
-      UsedDailyProtein: +ProteinInput,
+      UsedDailyCalories: this.state.UsedDailyCalories,
+      UsedDailyFat: this.state.UsedDailyFat,
+      UsedDailyCarbs: this.state.UsedDailyCarbs,
+      UsedDailyProtein: this.state.UsedDailyProtein,
       showModal2: false,
     });
-    console.log(this.state.UsedDailyCalories);
 
-
-    const firstPair = ["UsedTotalCalories", JSON.stringify(this.state.UsedDailyCalories)];
-    const secondPair = ["UsedTotalCarbs", JSON.stringify(this.state.UsedDailyCarbs)];
-    const thirdPair = ["UsedTotalProtein", JSON.stringify(this.state.UsedDailyProtein)];
-    const fourthPair = ["UsedTotalFat", JSON.stringify(this.state.UsedDailyFat)];
+    const firstPair = [
+      "UsedTotalCalories",
+      JSON.stringify(this.state.UsedDailyCalories),
+    ];
+    const secondPair = [
+      "UsedTotalCarbs",
+      JSON.stringify(this.state.UsedDailyCarbs),
+    ];
+    const thirdPair = [
+      "UsedTotalProtein",
+      JSON.stringify(this.state.UsedDailyProtein),
+    ];
+    const fourthPair = [
+      "UsedTotalFat",
+      JSON.stringify(this.state.UsedDailyFat),
+    ];
 
     try {
       this.setState({});
       var usedValues = [firstPair, secondPair, thirdPair, fourthPair];
-      AsyncStorage.setItem("DATA_KEY", JSON.stringify(usedValues))
-
-
+      AsyncStorage.setItem("DATA_KEY", JSON.stringify(usedValues));
     } catch (error) {
       console.log(error);
     }
+
+    this.getPercent();
 
   };
 
@@ -98,19 +127,19 @@ export default class Macros extends React.Component {
     let CalsCarbsInput = CarbsInput * 4;
     let totalCalsSet = CalsCarbsInput + CalsFatInput + CalsProteinInput;
 
-    let CaloriePercentage = (totalCalsSet / 2400) * 100;
+    
     this.setState({
       totalCalsSet: totalCalsSet,
       CalsProteinInput: ProteinInput,
       CalsFatInput: FatInput,
       CalsCarbsInput: CalsCarbsInput,
       showModal: false,
-      CaloriePercentage: CaloriePercentage,
     });
-    console.log(totalCalsSet);
 
-
-    const firstPair = ["totalCalsSet", JSON.stringify(this.state.totalCalories)];
+    const firstPair = [
+      "totalCalsSet",
+      JSON.stringify(this.state.totalCalories),
+    ];
     const secondPair = ["totalCarbsSet", JSON.stringify(CarbsInput)];
     const thirdPair = ["totalProteinSet", JSON.stringify(ProteinInput)];
     const fourthPair = ["totalFatSet", JSON.stringify(FatInput)];
@@ -118,43 +147,33 @@ export default class Macros extends React.Component {
     try {
       this.setState({});
       var setValues = [firstPair, secondPair, thirdPair, fourthPair];
-      AsyncStorage.setItem("DATA_KEY", JSON.stringify(setValues))
-
-
+      AsyncStorage.setItem("DATA_KEY", JSON.stringify(setValues));
     } catch (error) {
       console.log(error);
     }
-
   };
 
-
-
   getData = async () => {
-
     try {
-      AsyncStorage.multiGet(["key1", "key2"]).then(response => {
-      })
-
-    } catch(e) {
+      AsyncStorage.multiGet(["key1", "key2"]).then((response) => {});
+    } catch (e) {
       // read error
     }
   };
 
+  getPercent = () =>{
+    let CaloriePercentage = (this.state.UsedDailyCalories / this.state.totalCalsSet) * 100;
 
+    this.setState({
+      CaloriePercentage: CaloriePercentage
+    })
 
+  }
 
   render() {
-
-
+    console.log(this.state.UsedDailyCalories);
     const { navigate } = this.props.navigation;
     let CaloriePercentage = this.state.CaloriePercentage + "%";
-
-//    let totalCals = this.props.navigation.getParam("totalCal", "nothing sent");
- //   totalCals = JSON.stringify(totalCals);
-
-    let totalCarbs = this.props.navigation.getParam("totalCarbs", "nothing sent");
-    totalCarbs = JSON.stringify(totalCarbs);
-
 
     return (
       //styling for navigation container
@@ -169,9 +188,12 @@ export default class Macros extends React.Component {
             </TouchableOpacity>
           </View>
           <View>
-            <TouchableOpacity  style={styles.setMacros} onPress={() => this.AddMacrosModal()}>
-            <Text> add Daily Macro Goal </Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.setMacros}
+              onPress={() => this.AddMacrosModal()}
+            >
+              <Text> add Daily Macro Goal </Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.viewOfMacros}>
@@ -255,25 +277,33 @@ export default class Macros extends React.Component {
 
         <View>
           <Modal
-              transparent={false}
-              visible={this.state.showModal2}
-              animationType="slide"
-              presentationStyle="formSheet"
+            transparent={false}
+            visible={this.state.showModal2}
+            animationType="slide"
+            presentationStyle="formSheet"
           >
             <View style={styles.modalView}>
+                <View style={styles.searhedStyle}> 
+                <Text> Item you recently searched: </Text>
+                <Text> {this.state.foodLabelFromTracker} </Text>
+                <Text> Fat: {this.state.FatsFromTracker} </Text>
+                <Text> Carbs: {this.state.CarbsFromTracker} </Text>
+                <Text> Protein: {this.state.ProteinFromTracker} </Text>
+                </View>
+
               <TextInput
-                  style={styles.textInputStyle}
-                  onChangeText={(text) => this.setState({ FatInput: text })}
-                  clearTextOnFocus={true}
+                style={styles.textInputStyle}
+                onChangeText={(text) => this.setState({ FatInput: text })}
+                clearTextOnFocus={true}
               >
                 <Text>Enter Fats</Text>
               </TextInput>
             </View>
             <View style={styles.modalView}>
               <TextInput
-                  style={styles.textInputStyle}
-                  onChangeText={(text) => this.setState({ CarbsInput: text })}
-                  clearTextOnFocus={true}
+                style={styles.textInputStyle}
+                onChangeText={(text) => this.setState({ CarbsInput: text })}
+                clearTextOnFocus={true}
               >
                 <Text>Enter Carbs</Text>
               </TextInput>
@@ -281,38 +311,35 @@ export default class Macros extends React.Component {
 
             <View style={styles.modalView}>
               <TextInput
-                  style={styles.textInputStyle}
-                  onChangeText={(text) => this.setState({ ProteinInput: text })}
-                  clearTextOnFocus={true}
+                style={styles.textInputStyle}
+                onChangeText={(text) => this.setState({ ProteinInput: text })}
+                clearTextOnFocus={true}
               >
                 <Text>Enter Protein</Text>
               </TextInput>
             </View>
 
             <Button
-                title="Add Macros"
-                onPress={() =>
-                    this.addMacrosManually(this.state.ProteinInput, this.state.FatInput, this.state.CarbsInput)
-                }
-                color="Black"
+              title="Add Macros"
+              onPress={() =>
+                this.addMacrosManually(
+                  this.state.ProteinInput,
+                  this.state.FatInput,
+                  this.state.CarbsInput
+                )
+              }
+              color="Black"
             />
 
             <Button
-                title="Cancel"
-                onPress={() =>
-                    this.setState({
-                      showModal2: false,
-                    })
-                }
-            >
-              {" "}
-            </Button>
+              title="Cancel"
+              onPress={() =>
+                this.setState({
+                  showModal2: false,
+                })
+              }
+            ></Button>
           </Modal>
-        </View>
-
-        <View>
-          <Text>{totalCarbs}</Text>
-
         </View>
 
         <View style={styles.buttonContainer}>
@@ -406,4 +433,9 @@ const styles = StyleSheet.create({
   viewOfMacros: {
     margin: 5,
   },
+
+  searhedStyle: {
+    padding: 5,
+    borderWidth: 1
+  }
 });

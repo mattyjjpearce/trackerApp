@@ -32,6 +32,7 @@ export default class Tracker extends React.Component {
       totalFat: 0,
       totalCarbs: 0,
       totalProtein: 0,
+      foodLabel: "",
     };
   }
 
@@ -52,13 +53,13 @@ export default class Tracker extends React.Component {
   };
 
   fetchOnPressOpacity = async (item) => {
-    
+
+    this.state.foodLabel = item.food.label;
     this.state.totalCalories += item.food.nutrients.ENERC_KCAL;
     this.state.totalFat += item.food.nutrients.FAT;
     this.state.totalCarbs += item.food.nutrients.CHOCDF;
     this.state.totalProtein += item.food.nutrients.PROCNT;
 
-    
     const firstPair = ["totalCalories", JSON.stringify(this.state.totalCalories)];
     const secondPair = ["totalCarbs", JSON.stringify(this.state.totalCarbs)];
     const thirdPair = ["totalProtein", JSON.stringify(this.state.totalProtein)];
@@ -106,6 +107,9 @@ export default class Tracker extends React.Component {
     const totalCarbs = this.state.totalCarbs;
     const totalProtein = this.state.totalProtein;
     const totalFat = this.state.totalFat;
+    const label = this.state.foodLabel;
+  
+    console.log(label)
 
     return (
       <View style={styles.container}>
@@ -188,10 +192,11 @@ export default class Tracker extends React.Component {
             title="Macros"
             onPress={() =>
               navigate("Macros", {
-                totalCal: totalCals,
+                totalCals: totalCals,
                 totalCarbs: totalCarbs,
                 totalProtein: totalProtein,
                 totalFat: totalFat,
+                label: label
               })
             }
             color="white"
