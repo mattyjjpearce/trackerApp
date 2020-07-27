@@ -44,9 +44,10 @@ export default class Macros extends React.Component {
       CarbsSet: 0,
       ProteinSet: 0,
     };
+    console.log(this.props.navigation);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.setState({
       CaloriesFromTracker: this.props.navigation.getParam(
         "totalCals",
@@ -148,13 +149,10 @@ export default class Macros extends React.Component {
       ProteinSet: ProteinInput,
     });
 
-    const firstPair = [
-      "totalCalsSet",
-      JSON.stringify(this.state.totalCalories),
-    ];
-    const secondPair = ["totalCarbsSet", JSON.stringify(CarbsInput)];
-    const thirdPair = ["totalProteinSet", JSON.stringify(ProteinInput)];
-    const fourthPair = ["totalFatSet", JSON.stringify(FatInput)];
+    const firstPair = ["totalCalsSet", JSON.stringify(this.state.totalCalsSet)];
+    const secondPair = ["FatSet", JSON.stringify(FatSet)];
+    const thirdPair = ["ProteinSet", JSON.stringify(ProteinSet)];
+    const fourthPair = ["CarbsSet", JSON.stringify(CarbsSet)];
 
     try {
       this.setState({});
@@ -194,50 +192,114 @@ export default class Macros extends React.Component {
     console.log(this.state.UsedDailyCalories);
     const { navigate } = this.props.navigation;
     let CaloriePercentage = this.state.CaloriePercentage + "%";
+    let FatPercentage = this.state.FatPercentage + "%";
+    let CarbPercentage = this.state.CarbPercentage + "%";
+    let ProteinPercentage = this.state.ProteinPercentage + "%";
 
     return (
       //styling for navigation container
       <View style={styles.container}>
         <View style={styles.topStyle}>
-          <Text>{this.state.UsedDailyCalories} </Text>
-          <Text>{this.state.UsedDailyCarbs} </Text>
-
           <View style={styles.setMacros}>
             <TouchableOpacity onPress={() => this.setMacroGoalModal()}>
               <Text> Set Daily Macro Goal </Text>
             </TouchableOpacity>
           </View>
-          <View>
-            <TouchableOpacity
-              style={styles.setMacros}
-              onPress={() => this.AddMacrosModal()}
-            >
-              <Text> add Daily Macro Goal </Text>
-            </TouchableOpacity>
-          </View>
 
-
-{/* Displaying the Progress bars etc */}
           <View>
             <View style={styles.viewOfMacros}>
               <Text>Daily Calories: {this.state.totalCalsSet} </Text>
-               <Text> - {this.state.UsedDailyCalories} </Text> 
-               <Text> = {Math.floor(this.state.CaloriePercentage)}%</Text>
+              <Text> - {this.state.UsedDailyCalories} </Text>
+              <Text> = {Math.floor(this.state.CaloriePercentage)}%</Text>
             </View>
 
             <View style={styles.progressBar}>
               <Animated.View
                 style={
                   ([StyleSheet.absoluteFill],
-                  { backgroundColor: "#8BED4F", width: CaloriePercentage })
+                  {
+                    backgroundColor: "#5979D9",
+                    width: CaloriePercentage,
+                  })
                 }
               />
             </View>
           </View>
 
+          <View style={styles.addMacros}>
+            <View>
+              <TouchableOpacity
+                style={styles.setMacros}
+                onPress={() => this.AddMacrosModal()}
+              >
+                <Text> Add Macros </Text>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Text>Fat: </Text>
 
+              <View style={styles.viewOfMacros}>
+                <Text >{this.state.FatSet} </Text>
+                <Text style={styles.minusColour}> - {this.state.UsedDailyFat} </Text>
+                </View>
 
+              <View style={styles.progressBar}>
+                <Animated.View
+                  style={
+                    ([StyleSheet.absoluteFill],
+                    {
+                      backgroundColor: "#5979D9",
+                      width: FatPercentage,
+                    })
+                  }
+                />
+                <Text> {Math.floor(this.state.FatPercentage)}%</Text>
+              </View>
+            </View>
 
+            <View>
+              <Text>Carbs:</Text>
+
+              <View style={styles.viewOfMacros}>
+                <Text>{this.state.CarbsSet} </Text>
+                <Text style={styles.minusColour}> - {this.state.UsedDailyCarbs} </Text>
+              </View>
+
+              <View style={styles.progressBar}>
+                <Animated.View
+                  style={
+                    ([StyleSheet.absoluteFill],
+                    {
+                      backgroundColor: "#5979D9",
+                      width: CarbPercentage,
+                    })
+                  }
+                />
+                <Text>{Math.floor(this.state.CarbPercentage)}%</Text>
+              </View>
+            </View>
+
+            <View>
+              <Text>Protein:</Text>
+              <View style={styles.viewOfMacros}>
+                <Text>{this.state.ProteinSet} </Text>
+                <Text style={styles.minusColour}> - {this.state.UsedDailyProtein} </Text>
+              </View>
+
+              <View style={styles.progressBar}>
+                <Animated.View
+                  style={
+                    ([StyleSheet.absoluteFill],
+                    {
+                      backgroundColor: "#5979D9",
+                      width: ProteinPercentage,
+                    })
+                  }
+                />
+                <Text> {Math.floor(this.state.ProteinPercentage)}%</Text>
+              </View>
+            </View>
+          </View>
 
           <View>
             <Modal
@@ -294,9 +356,7 @@ export default class Macros extends React.Component {
                     showModal: false,
                   })
                 }
-              >
-                {" "}
-              </Button>
+              ></Button>
             </Modal>
           </View>
         </View>
@@ -395,7 +455,6 @@ export default class Macros extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "red",
   },
 
   modalView: {
@@ -430,7 +489,6 @@ const styles = StyleSheet.create({
   },
 
   topStyle: {
-    backgroundColor: "white",
     height: 300,
     margin: 30,
   },
@@ -455,15 +513,26 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignSelf: "center",
     flexDirection: "row",
+    shadowOpacity: 0.5,
   },
   viewOfMacros: {
-    paddingTop: 20,
-    alignSelf: "center",
-    flexDirection: "row"
+    paddingTop: 5,
+    flexDirection: "row",
+    margin: 5,
+    marginLeft: 45,
   },
 
   searhedStyle: {
     padding: 5,
     borderWidth: 1,
   },
+
+  addMacros: {
+    margin: 10,
+    paddingTop: 20,
+  },
+
+  minusColour: {
+    color:"red"
+  }
 });
