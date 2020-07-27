@@ -60,6 +60,14 @@ export default class Tracker extends React.Component {
     this.state.totalCarbs += item.food.nutrients.CHOCDF;
     this.state.totalProtein += item.food.nutrients.PROCNT;
 
+    this.setState({
+      foodLabel: this.state.foodLabel,
+      totalCalories:  this.state.totalCalories,
+      totalFat: this.state.totalFat,
+      totalCarbs: this.state.totalCarbs,
+      totalProtein: this.state.totalProtein
+    })
+
     const firstPair = ["totalCalories", JSON.stringify(this.state.totalCalories)];
     const secondPair = ["totalCarbs", JSON.stringify(this.state.totalCarbs)];
     const thirdPair = ["totalProtein", JSON.stringify(this.state.totalProtein)];
@@ -114,10 +122,7 @@ export default class Tracker extends React.Component {
     return (
       <View style={styles.container}>
         <Button title="clear" onPress={() => this.resetCalories()} />
-        <Text>
-          Total Calories: {console.log(this.state.totalCalories)}
-          {this.state.totalCalories}
-        </Text>
+       
         <View style={styles.viewForInputContainer}>
           <TextInput
             onChangeText={(text) => this.setState({ item: text })}
@@ -183,11 +188,7 @@ export default class Tracker extends React.Component {
               color="white"
             />
           </View>
-          <Button
-            title="Shops"
-            onPress={() => navigate("Shops")}
-            color="white"
-          />
+         
           <Button
             title="Macros"
             onPress={() =>

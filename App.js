@@ -13,7 +13,6 @@ import { createStackNavigator } from "react-navigation-stack";
 
 // Components
 import Tracker from "./src/Tracker";
-import Shops from "./src/Shops";
 import Macros from "./src/Macros";
 
 /**
@@ -25,7 +24,6 @@ import Macros from "./src/Macros";
 const Navigator = createStackNavigator({
   Macros: { screen: Macros },
   Tracker: { screen: Tracker },
-  Shops: { screen: Shops },
 
 
 });

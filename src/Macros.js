@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-community/async-storage";
-import { useDispatch } from "react-redux";
 
 export default class Macros extends React.Component {
   static navigationOptions = {
@@ -200,17 +199,17 @@ export default class Macros extends React.Component {
       //styling for navigation container
       <View style={styles.container}>
         <View style={styles.topStyle}>
-          <View style={styles.setMacros}>
+          <View style={styles.newSetMacros}>
             <TouchableOpacity onPress={() => this.setMacroGoalModal()}>
-              <Text> Set Daily Macro Goal </Text>
+              <Text> Set Macros</Text>
             </TouchableOpacity>
           </View>
 
           <View>
             <View style={styles.viewOfMacros}>
               <Text>Daily Calories: {this.state.totalCalsSet} </Text>
-              <Text> - {this.state.UsedDailyCalories} </Text>
-              <Text> = {Math.floor(this.state.CaloriePercentage)}%</Text>
+              <Text style={styles.minusColour}> - {this.state.UsedDailyCalories} </Text>
+            
             </View>
 
             <View style={styles.progressBar}>
@@ -223,25 +222,27 @@ export default class Macros extends React.Component {
                   })
                 }
               />
+                <Text> {Math.floor(this.state.CaloriePercentage)}%</Text>
             </View>
           </View>
 
           <View style={styles.addMacros}>
-            <View>
+            <View style={styles.addMacrosManually}>
               <TouchableOpacity
                 style={styles.setMacros}
                 onPress={() => this.AddMacrosModal()}
               >
-                <Text> Add Macros </Text>
+                <Text style={styles.addText}> Add Macros </Text>
               </TouchableOpacity>
             </View>
             <View>
-              <Text>Fat: </Text>
-
+              <Text style={styles.macroText}>Fat </Text>
               <View style={styles.viewOfMacros}>
-                <Text >{this.state.FatSet} </Text>
-                <Text style={styles.minusColour}> - {this.state.UsedDailyFat} </Text>
-                </View>
+                <Text>{this.state.FatSet} </Text>
+                <Text style={styles.minusColour}>
+                  - {this.state.UsedDailyFat}
+                </Text>
+              </View>
 
               <View style={styles.progressBar}>
                 <Animated.View
@@ -258,11 +259,13 @@ export default class Macros extends React.Component {
             </View>
 
             <View>
-              <Text>Carbs:</Text>
+              <Text style={styles.macroText}>Carbs</Text>
 
               <View style={styles.viewOfMacros}>
                 <Text>{this.state.CarbsSet} </Text>
-                <Text style={styles.minusColour}> - {this.state.UsedDailyCarbs} </Text>
+                <Text style={styles.minusColour}>
+                  - {this.state.UsedDailyCarbs}{" "}
+                </Text>
               </View>
 
               <View style={styles.progressBar}>
@@ -280,10 +283,13 @@ export default class Macros extends React.Component {
             </View>
 
             <View>
-              <Text>Protein:</Text>
+              <Text style={styles.macroText}>Protein</Text>
               <View style={styles.viewOfMacros}>
                 <Text>{this.state.ProteinSet} </Text>
-                <Text style={styles.minusColour}> - {this.state.UsedDailyProtein} </Text>
+                <Text style={styles.minusColour}>
+                  {" "}
+                  - {this.state.UsedDailyProtein}{" "}
+                </Text>
               </View>
 
               <View style={styles.progressBar}>
@@ -436,11 +442,7 @@ export default class Macros extends React.Component {
               color="white"
             />
           </View>
-          <Button
-            title="Shops"
-            onPress={() => navigate("Shops")}
-            color="white"
-          />
+          
           <Button
             title="Macros"
             onPress={() => navigate("Macros")}
@@ -461,6 +463,17 @@ const styles = StyleSheet.create({
     width: "60%",
     margin: 20,
     alignSelf: "center",
+  },
+
+  newSetMacros: {
+    alignSelf: "center",
+    borderWidth: .5,
+    padding: 5,
+    backgroundColor: "#5979D9",
+    shadowOpacity: 1,
+    marginBottom: 20,
+    shadowRadius: 3.84,
+
   },
 
   textInputStyle: {
@@ -485,7 +498,14 @@ const styles = StyleSheet.create({
 
   setMacros: {
     alignSelf: "center",
-    borderWidth: 1,
+    borderWidth: .5,
+    padding: 5,
+    backgroundColor: "#5979D9",
+    shadowOpacity: 1,
+    marginBottom: 20,
+    shadowRadius: 3.84,
+
+
   },
 
   topStyle: {
@@ -516,9 +536,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
   },
   viewOfMacros: {
-    paddingTop: 5,
+    paddingTop: 0,
     flexDirection: "row",
-    margin: 5,
+    margin: 0,
     marginLeft: 45,
   },
 
@@ -533,6 +553,36 @@ const styles = StyleSheet.create({
   },
 
   minusColour: {
-    color:"red"
+    color: "red",
+  },
+  macroText: {
+    marginTop: 10,
+    alignSelf: "center",
+    fontSize: 18,
+  },
+
+  addText: {
+    color: "black"
   }
+
+
+  
 });
+/*
+ alignSelf: "center",
+    padding: 10,
+    borderRadius: 3,
+    backgroundColor: "white",
+    borderColor: "black",
+    width: "70%",
+    color: "#919191",
+    fontSize: 18,
+    fontFamily: "Avenir-Light",
+    shadowOpacity: 0.9,
+    shadowRadius: 3.84,
+    shadowColor: "black",
+    elevation: 5,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },*/
