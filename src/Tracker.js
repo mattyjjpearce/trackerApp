@@ -36,6 +36,8 @@ export default class Tracker extends React.Component {
     };
   }
 
+  //Function for calling the API 
+
   fetchData = (item) => {
     fetch(
       `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
@@ -52,6 +54,8 @@ export default class Tracker extends React.Component {
     Keyboard.dismiss();
   };
 
+
+  //when an item from the database is pressed, add the values to the correct state
   fetchOnPressOpacity = async (item) => {
 
     this.state.foodLabel = item.food.label;
@@ -84,6 +88,8 @@ export default class Tracker extends React.Component {
     }
   };
 
+
+  //asyn storage getData method
   getData = async () => {
    
     try {
@@ -95,6 +101,7 @@ export default class Tracker extends React.Component {
     }    
   };
 
+  //reset calories using async method and reseting state
   resetCalories = async () => {
     this.setState({
       totalCalories: 0,
