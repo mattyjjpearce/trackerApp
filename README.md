@@ -1,6 +1,6 @@
-# React Native Navigation Starter Template
+# React Native Calorie Tracking App 
 
-A starter template for react native navigation.
+This app allows users to manually set their daily macro goals, add macros manually and search up foods on a database to click and add
 
 ## Usage
 
@@ -8,31 +8,3 @@ A starter template for react native navigation.
 
 Requires expo for the server alongside Xcode for the IOS simulator
 
-**If you are having problems:**
-
-Track your daily calories, either manually entering them or finding a food on the database. 
-
-```
-var sharedBlacklist = [
-  /node_modules[/\\]react[/\\]dist[/\\].*/,
-  /website\/node_modules\/.*/,
-  /heapCapture\/bundle\.js/,
-  /.*\/__tests__\/.*/
-];
-```
-
-With:
-
-```
-var sharedBlacklist = [
-  /node_modules[\/\\]react[\/\\]dist[\/\\].*/,
-  /website\/node_modules\/.*/,
-  /heapCapture\/bundle\.js/,
-  /.*\/__tests__\/.*/
-];
-```
-
-## Prerequisites
-
-* Node >= v.12
-* Expo CLI
