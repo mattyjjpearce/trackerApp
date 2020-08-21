@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import {
   StyleSheet,
   View,
@@ -6,41 +6,44 @@ import {
   Button,
   TextInput,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  Keyboard,
 } from "react-native";
-
+import AsyncStorage from "@react-native-community/async-storage";
 
 const APP_ID = "9ef9baef";
 const APP_KEY = "f48b3d6c5374f60449cfe909f947a540";
 
-/**
- * Profile screen
- */
 export default class Tracker extends React.Component {
   static navigationOptions = {
     title: "Tracker",
   };
 
-  //storing results from the api into this local state
+
   constructor(props) {
     super(props);
+    this.getData();
+
     this.state = {
       isLoading: true,
       dataSource: null,
+      show: false,
+      totalCalories: 0,
+      totalFat: 0,
+      totalCarbs: 0,
+      totalProtein: 0,
+      foodLabel: "",
     };
   }
-  //This is fetching the data for info such as name and to get the item ID
+
+  //Function for calling the API 
 
   fetchData = (item) => {
-    console.log(item);
     fetch(
       `https://api.edamam.com/api/food-database/parser?ingr=${item}&app_id=${APP_ID}&app_key=${APP_KEY}`
     )
       .then((response) => response.json())
       .then((responseJson) => {
-        console.log(responseJson);
-
-        //  alert(JSON.stringify(responseJson)); //ingr this is your key this is wat the api will return for you. so we need to send whichver food item that we are looking for / can we let a user search and return an item? yes. heymaybe i can call you an explain to you yes on what?watspp? i do not have discord?..... wait teamviewer has call featureok    // can you show me how to search for an item? yes sure
         this.setState({
           itemArray: responseJson.hints,
         });
@@ -48,42 +51,115 @@ export default class Tracker extends React.Component {
       .catch((error) => {
         console.log(error);
       });
+    Keyboard.dismiss();
+  };
+
+
+  //when an item from the database is pressed, add the values to the correct state
+  fetchOnPressOpacity = async (item) => {
+
+    this.state.foodLabel = item.food.label;
+    this.state.totalCalories += item.food.nutrients.ENERC_KCAL;
+    this.state.totalFat += item.food.nutrients.FAT;
+    this.state.totalCarbs += item.food.nutrients.CHOCDF;
+    this.state.totalProtein += item.food.nutrients.PROCNT;
+
+    this.setState({
+      foodLabel: this.state.foodLabel,
+      totalCalories:  this.state.totalCalories,
+      totalFat: this.state.totalFat,
+      totalCarbs: this.state.totalCarbs,
+      totalProtein: this.state.totalProtein
+    })
+
+    const firstPair = ["totalCalories", JSON.stringify(this.state.totalCalories)];
+    const secondPair = ["totalCarbs", JSON.stringify(this.state.totalCarbs)];
+    const thirdPair = ["totalProtein", JSON.stringify(this.state.totalProtein)];
+    const fourthPair = ["totalFat", JSON.stringify(this.state.totalFat)];
+
+    try {
+      this.setState({});
+      var values = [firstPair, secondPair, thirdPair, fourthPair];
+      AsyncStorage.setItem("DATA_KEY", JSON.stringify(values))
+
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  //asyn storage getData method
+  getData = async () => {
+   
+    try {
+      AsyncStorage.multiGet(["key1", "key2"]).then(response => {
+        })    
+
+  } catch(e) {
+      // read error
+    }    
+  };
+
+  //reset calories using async method and reseting state
+  resetCalories = async () => {
+    this.setState({
+      totalCalories: 0,
+      totalFat: 0,
+      totalCarbs: 0,
+      totalProtein: 0,
+    });
+    try {
+      await AsyncStorage.clear();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   render() {
-    const { navigate, state } = this.props.navigation;
-    return (
-      //styling for navigation container
-      <View style={styles.container}>
-        <View style={styles.ViewFilterContainer}>
-          <TouchableOpacity
-          style = {styles.ViewFilterContainer}
-          >
-            <View style={styles.filterButtonView}>
-              <Text style = {styles.filterText}> Filter </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+    const { navigate } = this.props.navigation;
+    const totalCals = this.state.totalCalories;
+    const totalCarbs = this.state.totalCarbs;
+    const totalProtein = this.state.totalProtein;
+    const totalFat = this.state.totalFat;
+    const label = this.state.foodLabel;
+  
+    console.log(label)
 
+    return (
+      <View style={styles.container}>
+        <Button title="clear" onPress={() => this.resetCalories()} />
+       
         <View style={styles.viewForInputContainer}>
           <TextInput
             onChangeText={(text) => this.setState({ item: text })}
             style={styles.textInputContainer}
+            clearTextOnFocus={true}
           >
             <Text style={styles.textColour}> Search Food </Text>
           </TextInput>
-          </View>
+        </View>
 
-          <Button
-            title="Search"
-            onPress={() => this.fetchData(this.state.item)}
-          />
+        <Button
+          title="Search"
+          onPress={() => this.fetchData(this.state.item)}
+        />
 
-          <View style={styles.paddingForResultsContainer}> 
-            <FlatList
-              style={styles.resultsBackground}
-              data={this.state.itemArray}
-              renderItem={({ item }) => (
+        <View style={styles.ViewFilterContainer}>
+          <TouchableOpacity style={styles.ViewFilterContainer}>
+            <View style={styles.filterButtonView}>
+              <Text style={styles.filterText}> Filter </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.paddingForResultsContainer}>
+          <FlatList
+            style={styles.resultsBackground}
+            data={this.state.itemArray}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                onPress={() => this.fetchOnPressOpacity(item, index)}
+              >
                 <View style={styles.resultsContainer}>
                   <View style={styles.textView}>
                     <Text style={styles.resultsText}>
@@ -106,9 +182,10 @@ export default class Tracker extends React.Component {
                     </Text>
                   </View>
                 </View>
-              )}
-            />
-            </View>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
 
         <View style={styles.buttonContainer}>
           <View>
@@ -118,15 +195,18 @@ export default class Tracker extends React.Component {
               color="white"
             />
           </View>
-          <Button
-            title="Shops"
-            onPress={() => navigate("Shops")}
-            color="white"
-          />
-          <Button title="Home" onPress={() => navigate("Home")} color="white" />
+         
           <Button
             title="Macros"
-            onPress={() => navigate("Macros")}
+            onPress={() =>
+              navigate("Macros", {
+                totalCals: totalCals,
+                totalCarbs: totalCarbs,
+                totalProtein: totalProtein,
+                totalFat: totalFat,
+                label: label
+              })
+            }
             color="white"
           />
         </View>
@@ -146,8 +226,7 @@ const styles = StyleSheet.create({
   },
 
   filterText: {
-    color: "#919191"
-
+    color: "#919191",
   },
 
   filterButtonView: {
@@ -161,26 +240,22 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     position: "absolute",
-    padding: 20,
+    padding: 10,
     bottom: 0,
     backgroundColor: "#5979D9",
     justifyContent: "space-evenly",
   },
 
   viewForInputContainer: {
-    paddingTop: 5,
+    paddingTop: 20,
     paddingLeft: 20,
-    paddingRight: 20
-
-
+    paddingRight: 20,
   },
 
   textInputContainer: {
+    borderRadius: 3,
     backgroundColor: "white",
     borderColor: "black",
-    borderWidth: 1,
-    borderLeftWidth: 1,
-    borderBottomWidth: 1,
     width: "70%",
     color: "#919191",
     fontSize: 18,
@@ -196,10 +271,11 @@ const styles = StyleSheet.create({
   },
 
   paddingForResultsContainer: {
-    padding: 20
-  },  
+    padding: 20,
+    paddingBottom: 50,
+  },
   resultsBackground: {
-    height: "70%",
+    height: "60%",
     width: "100%",
     alignSelf: "center",
     borderRadius: 5,
@@ -236,5 +312,16 @@ const styles = StyleSheet.create({
   },
   resultsTextSubInfo: {
     paddingLeft: 5,
+  },
+
+  modalView: {
+    marginTop: 100,
+    height: "70%",
+    width: "95%",
+    alignSelf: "center",
+    borderRadius: 5,
+    borderWidth: 0.1,
+    shadowOpacity: 0.7,
+    backgroundColor: "white",
   },
 });
